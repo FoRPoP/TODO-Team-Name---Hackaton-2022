@@ -1,5 +1,6 @@
 from ast import Str
 import itertools
+import string
 from tokenize import Double, String
 from typing import List
 from xmlrpc.client import Boolean
@@ -162,6 +163,7 @@ class Game():
 
                 self.casino.setFruitsState(collisions_matrix)
                 self.casino.calculateWinnings()
+                print(f'igrac ima novca: {self.casino.player_money}')
 
                 self.payout = False
 
@@ -185,8 +187,8 @@ class Game():
                         self.spin = self.casino.payToMachine(1)
                 if event.type == MOUSEBUTTONDOWN:
                     mx, my = pygame.mouse.get_pos()
-                    print(mx)
-                    print(my)
+                    print(f'mouse x je {mx}')
+                    print(f'mouse y je {my}')
 
             self.display.blit(self.table_borders_surface, (0, 0))
 
@@ -195,7 +197,7 @@ class Game():
 
             self.window.blit(pygame.transform.scale(self.display, (self.DISPLAY_W, self.DISPLAY_H)), (0, 0))
             pygame.display.update()
-            self.clock.tick(60)
+            self.clock.tick(120)
 
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)
@@ -268,21 +270,22 @@ class Payout(object):
         self.bank_money = self.start_bank_money
         self.money_invested = 0.0
 
-    def calculate_best(row):
+    def calculate_best_from_begginging(row):
+        current_el = row[0]
         length = len(row)
-        max_winnings, winnings = 0.0 , 0.0
 
-        for i in range(length):
-            current_length = 0
-            for j in range(i, length):
-                if row[i] == row[j]:
-                    current_length += 1
-                winnings = Payout.evaluate(row[i] , current_length)
-                if winnings > max_winnings:
-                    max_winnings = winnings            
-        return max_winnings
+        max_length = 1
+        for j in range(1, length):
+            if current_el == 'book':
+                max_length += 1
+                if row[j] != 'book':
+                    current_el = row[j]
+            elif current_el == row[j] or row[j] == 'book':
+                    max_length += 1
 
-    def calculate_best_book(row):
+        return Payout.evaluate(current_el, max_length)
+
+    def calculate_best_all(row):
         length = len(row)
         max_winnings, winnings = 0.0, 0.0
         current_element = None
@@ -312,7 +315,7 @@ class Payout(object):
                 array.append(element)
         self.array = array
 
-    def evaluate(element, length):
+    def evaluate(element:string, length:string):
         # TODO
         return 100
 
@@ -324,35 +327,35 @@ class Payout(object):
         # horizontalni #no 1, 2, 3
         winnings = 0.0
         for row in self.fruits:
-            winnings += Payout.calculate_best(row)
+            winnings += Payout.calculate_best_from_begginging(row)
 
         # no 4
         pom_list = [self.array[0], self.array[6], self.array[12], self.array[8], self.array[4]]
-        winnings += Payout.calculate_best(pom_list)
+        winnings += Payout.calculate_best_from_begginging(pom_list)
         
         # no 5
         pom_list = [self.array[10], self.array[6], self.array[2], self.array[8], self.array[14]]
-        winnings += Payout.calculate_best(pom_list)
+        winnings += Payout.calculate_best_from_begginging(pom_list)
 
         # no 6
         pom_list = [self.array[0], self.array[6], self.array[2], self.array[8], self.array[4]]
-        winnings += Payout.calculate_best(pom_list)
+        winnings += Payout.calculate_best_from_begginging(pom_list)
 
         # no 7
         pom_list = [self.array[5], self.array[11], self.array[7], self.array[13], self.array[9]]
-        winnings += Payout.calculate_best(pom_list)
+        winnings += Payout.calculate_best_from_begginging(pom_list)
 
         # no 8
         pom_list = [self.array[5], self.array[1], self.array[7], self.array[3], self.array[9]]
-        winnings += Payout.calculate_best(pom_list)
+        winnings += Payout.calculate_best_from_begginging(pom_list)
 
         # no 9
         pom_list = [self.array[10], self.array[6], self.array[12], self.array[8], self.array[14]]
-        winnings += Payout.calculate_best(pom_list)
+        winnings += Payout.calculate_best_from_begginging(pom_list)
 
         # no 10
         pom_list = [self.array[0], self.array[6], self.array[12], self.array[13], self.array[14]]
-        winnings += Payout.calculate_best(pom_list)
+        winnings += Payout.calculate_best_from_begginging(pom_list)
 
         self.payToPlayer(winnings)        
 
@@ -361,7 +364,7 @@ class Payout(object):
             self.player_money -= money
             self.bank_money += money
             self.money_invested = money
-            # pozvati spin ukoliko ovo ima novca ili ovde ili u main-u
+
             return True
         else:
             return False

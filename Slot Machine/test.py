@@ -15,6 +15,20 @@ def horisontalCheck(row):
                     max_length, element =  current_length, row[i]
     return element, max_length
 
+# TODO zameniti sa calculate_best_from_beggining
+# def calculate_best(row):
+    # length = len(row)
+    # max_winnings, winnings = 0.0 , 0.0
+    # for i in range(length):
+        # current_length = 0
+        # for j in range(i, length):
+            # if row[i] == row[j]:
+                # current_length += 1
+            # #winnings = Payout.evaluate(row[i] , current_length)
+            # if winnings > max_winnings:
+                # max_winnings = winnings            
+    # return max_winnings
+
 
 lista = [x for x in range(15)]
 element , duzina = horisontalCheck(lista)
