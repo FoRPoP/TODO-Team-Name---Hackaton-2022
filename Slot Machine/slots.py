@@ -309,6 +309,7 @@ class Game():
             self.display.blit(self.totalbet_img,(450,900))
             self.draw_text(str(self.casino.money_invested), 45, 580, 970)
             self.display.blit(self.won_img,(1210,900))
+            self.draw_text(str(self.casino.get_current_winnings()), 45, 1300, 970)
             self.display.blit(self.credits1_img,(1445,900))
             self.draw_text(str(self.casino.player_money), 45, 1550, 970)
             self.display.blit(self.spins_img, (1680, 905))
