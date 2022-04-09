@@ -8,6 +8,8 @@ import pygame, os, random, sys, noise
 from PIL import Image
 import itertools
 
+import button
+
 from pygame.locals import *
 import button
 from menu import *
@@ -39,6 +41,14 @@ class Game():
         self.pineapple_img = pygame.image.load('data/images/pineapple.png')
         self.rectangle_img = pygame.image.load('data/images/rectangle.png')
 
+        self.spin_img = pygame.image.load('./data/images/spinbutton.png')
+        # self.options_img = pygame.image.load('./data/images/options.png').convert_alpha()
+        # self.credits_img = pygame.image.load('./data/images/credits.png').convert_alpha()
+
+        self.spin_button = button.Button(1920/2-self.spin_img.get_width()/2, 840, self.spin_img, 1)
+        # self.options_button = button.Button(self.optionsx, self.optionsy, self.options_img, 2)
+        # self.credits_button = button.Button(self.creditsx, self.creditsy, self.credits_img, 2)
+
         self.pineapple_img.set_colorkey((255, 255, 255))
         self.rectangle_img.set_colorkey((255, 255, 255))
 
@@ -50,8 +60,7 @@ class Game():
         pygame.transform.threshold(self.table_borders_surface, self.table_surface, (29, 36, 48), (40, 40, 40, 0), (255, 255, 255), 1, None, True)
         self.table_borders_surface.set_colorkey((255, 255, 255))
 
-        pygame.mixer.music.load('data/audio/music.wav')
-        # pygame.mixer.music.play(-1)
+        #pygame.mixer.music.load('data/audio/music.wav')
 
         self.default_reel1 = [Tile(350, 675 - i * 200, self.pineapple_img, 1, self.display, "pineapple") for i in range (50)]
         self.default_reel2 = [Tile(604, 675 - i * 200, self.pineapple_img, 2, self.display, "pineapple") for i in range (50)]
@@ -179,6 +188,11 @@ class Game():
                     print(mx)
                     print(my)
 
+            self.display.blit(self.table_borders_surface, (0, 0))
+
+            if self.spin_button.draw(self.display):
+                self.spin = self.casino.payToMachine(1)
+
             self.window.blit(pygame.transform.scale(self.display, (self.DISPLAY_W, self.DISPLAY_H)), (0, 0))
             pygame.display.update()
             self.clock.tick(60)
@@ -268,20 +282,27 @@ class Payout(object):
                     max_winnings = winnings            
         return max_winnings
 
-    # def calculate_best_book(row):
-        # length = len(row)
-        # max_winnings, winnings = 0.0 , 0.0
-        # current_element = None
-        # for i in range(length):
-            # current_element = row[i]
-            # current_length = 0
-            # for j in range(i, length):
-                # if current_element == row[j] or row[j] == 'book':
-                    # current_length += 1
-                    # winnings = Payout.evaluate(current_element , current_length)
-                    # if winnings > max_winnings:
-                        # max_winnings = winnings      
-        # return max_winnings
+    def calculate_best_book(row):
+        length = len(row)
+        max_winnings, winnings = 0.0, 0.0
+        current_element = None
+        for i in range(length):
+            current_element = row[i]
+            current_length = 0
+            for j in range(i, length):
+                if current_element == row[j] or row[j] == 'book':
+                    current_length += 1
+                    winnings = Payout.evaluate(current_element, current_length)
+                    if winnings > max_winnings:
+                        max_winnings = winnings
+                if current_element == "book":
+                    current_length += 1
+                    if row[j] != 'book':
+                        current_element = row[j]
+                    winnings = Payout.evaluate(current_element, current_length)
+                    if winnings > max_winnings:
+                        max_winnings = winnings
+        return max_winnings
 
     def setFruitsState(self, fruits):
         self.fruits = fruits
