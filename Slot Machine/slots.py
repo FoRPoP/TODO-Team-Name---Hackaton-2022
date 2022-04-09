@@ -62,6 +62,26 @@ class Game():
         self.soundon_button = button.Button(1805, 30, self.soundon_img, 0.2)
         self.soundoff_button = button.Button(1805, 30, self.soundoff_img, 0.2)
 
+        self.banana_img = pygame.image.load('data/images/banana.png')
+        self.banana_img = pygame.transform.scale(self.banana_img, (191, 153))
+        self.apple_img = pygame.image.load('data/images/apple.png')
+        self.apple_img = pygame.transform.scale(self.apple_img, (191, 153))
+        self.jungle1_img = pygame.image.load('data/images/jungle1.png')
+        self.jungle1_img = pygame.transform.scale(self.jungle1_img, (191, 153))
+        self.pyramid_img = pygame.image.load('data/images/pyramid.png')
+        self.pyramid_img = pygame.transform.scale(self.pyramid_img, (191, 153))
+        self.monkey_img = pygame.image.load('data/images/monkey.png')
+        self.monkey_img = pygame.transform.scale(self.monkey_img, (191, 153))
+        self.alfa_img = pygame.image.load('data/images/alfa.png')
+        self.alfa_img = pygame.transform.scale(self.alfa_img, (191, 153))
+        self.beta_img = pygame.image.load('data/images/beta.png')
+        self.beta_img = pygame.transform.scale(self.beta_img, (191, 153))
+        self.omega_img = pygame.image.load('data/images/omega.png')
+        self.omega_img = pygame.transform.scale(self.omega_img, (191, 153))
+        self.mi_img = pygame.image.load('data/images/mi.png')
+        self.mi_img = pygame.transform.scale(self.mi_img, (191, 153))
+        self.pi_img = pygame.image.load('data/images/pi.png')
+        self.pi_img = pygame.transform.scale(self.pi_img, (191, 153))
 
         self.pineapple_img.set_colorkey((255, 255, 255))
         self.rectangle_img.set_colorkey((255, 255, 255))
@@ -75,6 +95,7 @@ class Game():
         self.table_borders_surface.set_colorkey((255, 255, 255))
 
         #pygame.mixer.music.load('data/audio/music.wav')
+        # pygame.mixer.music.play(-1)
 
         self.default_reel1 = [Tile(350, 675 - i * 200, self.pineapple_img, 1, self.display, "pineapple") for i in range (50)]
         self.default_reel2 = [Tile(604, 675 - i * 200, self.pineapple_img, 2, self.display, "pineapple") for i in range (50)]
@@ -82,11 +103,11 @@ class Game():
         self.default_reel4 = [Tile(1112, 675 - i * 200, self.pineapple_img, 4, self.display, "pineapple") for i in range (50)]
         self.default_reel5 = [Tile(1366, 675 - i * 200, self.pineapple_img, 5, self.display, "pineapple") for i in range (50)]
 
-        self.reel1 = [Tile(350, 675 - i * 200, self.pineapple_img, 1, self.display, "pineapple") for i in range(50)]
-        self.reel2 = [Tile(604, 675 - i * 200, self.pineapple_img, 2, self.display, "pineapple") for i in range(50)]
-        self.reel3 = [Tile(858, 675 - i * 200, self.pineapple_img, 3, self.display, "pineapple") for i in range(50)]
-        self.reel4 = [Tile(1112, 675 - i * 200, self.pineapple_img, 4, self.display, "pineapple") for i in range(50)]
-        self.reel5 = [Tile(1366, 675 - i * 200, self.pineapple_img, 5, self.display, "pineapple") for i in range(50)]
+        self.reel1 = [Tile(350, 675 - i * 200, self.pi_img, 1, self.display, "pineapple") for i in range(50)]
+        self.reel2 = [Tile(604, 675 - i * 200, self.mi_img, 2, self.display, "pineapple") for i in range(50)]
+        self.reel3 = [Tile(858, 675 - i * 200, self.omega_img, 3, self.display, "pineapple") for i in range(50)]
+        self.reel4 = [Tile(1112, 675 - i * 200, self.alfa_img, 4, self.display, "pineapple") for i in range(50)]
+        self.reel5 = [Tile(1366, 675 - i * 200, self.beta_img, 5, self.display, "pineapple") for i in range(50)]
 
         self.default_reels = [self.default_reel1, self.default_reel2, self.default_reel3, self.default_reel4, self.default_reel5]
         self.reels = [self.reel1, self.reel2, self.reel3, self.reel4, self.reel5]
@@ -270,12 +291,14 @@ class Tile():
         self.reel = reel
         self.display = display
         self.tile_type = tile_type
+        self.rectangle_img = pygame.image.load('data/images/rectangle.png')
+        self.rectangle_img.set_colorkey((255, 255, 255))
 
     def move(self, velocity):
         self.y += velocity
 
     def draw(self):
-        self.display.blit(self.img, (self.x, self.y))
+        self.display.blit(self.rectangle_img, (self.x, self.y))
         self.display.blit(self.img, (self.x + 5, self.y + 15))
 
     def get_rect(self):
@@ -319,27 +342,20 @@ class Payout(object):
                     max_winnings = winnings            
         return max_winnings
 
-    def calculate_best_book(row):
-        length = len(row)
-        max_winnings, winnings = 0.0, 0.0
-        current_element = None
-        for i in range(length):
-            current_element = row[i]
-            current_length = 0
-            for j in range(i, length):
-                if current_element == row[j] or row[j] == 'book':
-                    current_length += 1
-                    winnings = Payout.evaluate(current_element, current_length)
-                    if winnings > max_winnings:
-                        max_winnings = winnings
-                if current_element == "book":
-                    current_length += 1
-                    if row[j] != 'book':
-                        current_element = row[j]
-                    winnings = Payout.evaluate(current_element, current_length)
-                    if winnings > max_winnings:
-                        max_winnings = winnings
-        return max_winnings
+    # def calculate_best_book(row):
+        # length = len(row)
+        # max_winnings, winnings = 0.0 , 0.0
+        # current_element = None
+        # for i in range(length):
+            # current_element = row[i]
+            # current_length = 0
+            # for j in range(i, length):
+                # if current_element == row[j] or row[j] == 'book':
+                    # current_length += 1
+                    # winnings = Payout.evaluate(current_element , current_length)
+                    # if winnings > max_winnings:
+                        # max_winnings = winnings
+        # return max_winnings
 
     def setFruitsState(self, fruits):
         self.fruits = fruits
