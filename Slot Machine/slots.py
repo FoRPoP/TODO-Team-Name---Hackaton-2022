@@ -408,7 +408,7 @@ class Payout(object):
     def set_current_winnings(self, value):
         self.current_winnings = value
     def get_current_winnings(self):
-        return self.get_current_winnings
+        return self.current_winnings
 
     def get_random_element(self, number):
         if number == 0:
@@ -679,9 +679,11 @@ class Payout(object):
     def payToMachine(self, money) -> Boolean:
         if self.free_bets > 0:
             self.free_bets -= 1
+            self.set_current_winnings(0.0)
             # TODO mozda ce biti bag, ako ima free betove, mora da se uzima previously, odnosno da mu se onesposobi da menja
             return True 
         if self.player_money >= 0.0:
+            self.set_current_winnings(0.0)
             self.player_money -= money
             self.bank_money += money
             self.money_invested = money
