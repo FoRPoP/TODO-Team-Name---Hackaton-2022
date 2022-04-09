@@ -33,7 +33,7 @@ class Game():
         self.font_name = pygame.font.get_default_font()
         self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
         self.main_menu = MainMenu(self)
-        self.options = OptionsMenu(self)
+
         self.credits = CreditsMenu(self)
         self.curr_menu = self.main_menu
 
@@ -47,6 +47,7 @@ class Game():
         self.totalbet_img = pygame.image.load('data/images/totalbet.png')
         self.won_img = pygame.image.load('data/images/won.png')
         self.credits1_img = pygame.image.load('data/images/credits1.png')
+        self.spins_img = pygame.image.load('data/images/spins.png')
 
 
         self.spin_img = pygame.image.load('./data/images/spinbutton.png')
@@ -55,6 +56,7 @@ class Game():
         self.betmax_img = pygame.image.load('./data/images/betmax.png')
         self.soundon_img = pygame.image.load('./data/images/sound.png')
         self.soundoff_img = pygame.image.load('./data/images/sound-off.png')
+        self.return_img = pygame.image.load('./data/images/return.png')
         self.sound=True
 
         self.spin_button = button.Button(1920/2-self.spin_img.get_width()/2, 840, self.spin_img, 1)
@@ -63,6 +65,7 @@ class Game():
         self.betmax_button = button.Button(1705,600,self.betmax_img,1)
         self.soundon_button = button.Button(1805, 30, self.soundon_img, 0.2)
         self.soundoff_button = button.Button(1805, 30, self.soundoff_img, 0.2)
+        self.return_button = button.Button(60, 30, self.return_img, 0.1)
 
         self.banana_img = pygame.image.load('data/images/banana.png')
         self.banana_img = pygame.transform.scale(self.banana_img, (191, 153))
@@ -96,8 +99,8 @@ class Game():
         pygame.transform.threshold(self.table_borders_surface, self.table_surface, (29, 36, 48), (40, 40, 40, 0), (255, 255, 255), 1, None, True)
         self.table_borders_surface.set_colorkey((255, 255, 255))
 
-        #pygame.mixer.music.load('data/audio/music.wav')
-        # pygame.mixer.music.play(-1)
+        pygame.mixer.music.load('data/music/BattleLoop2.ogg')
+        pygame.mixer.music.play(-1)
 
         self.default_reel1 = [Tile(350, 675 - i * 200, self.pineapple_img, 1, self.display, "pineapple") for i in range (50)]
         self.default_reel2 = [Tile(604, 675 - i * 200, self.pineapple_img, 2, self.display, "pineapple") for i in range (50)]
@@ -220,7 +223,7 @@ class Game():
                             pass
                             # pygame.mixer.music.play()
                     if event.key == K_SPACE:
-                        self.spin = self.casino.payToMachine(1)
+                        self.spin = self.casino.payToMachine(self.casino.money_invested)
                 if event.type == MOUSEBUTTONDOWN:
                     mx, my = pygame.mouse.get_pos()
                     print(f'mouse x je {mx}')
@@ -229,30 +232,41 @@ class Game():
             self.display.blit(self.table_borders_surface, (0, 0))
 
             if self.spin_button.draw(self.display):
-                self.spin = self.casino.payToMachine(1)
+                self.spin = self.casino.payToMachine(self.casino.money_invested)
 
             if self.autostart_button.draw(self.display):
-                print("Clicked")
+                while self.casino.spins>0:
+                    self.casino.spins = self.casino.spins-1
+                    self.spin = self.casino.payToMachine(self.casino.money_invested)
 
             if self.lines_button.draw(self.display):
                 print("Clicked")
 
             if self.betmax_button.draw(self.display):
-                print("Clicked")
+                self.casino.money_invested=self.casino.betmax
 
+            if self.return_button.draw(self.display):
+                self.curr_menu = self.main_menu
+                self.playing = False
 
             if self.sound:
                 if self.soundon_button.draw(self.display):
                    self.sound= False
+                   pygame.mixer.music.stop()
+
             else:
                 if self.soundoff_button.draw(self.display):
                     self.sound = True
+                    pygame.mixer.music.play(-1)
 
             self.display.blit(self.lines1_img,(200,900))
             self.display.blit(self.totalbet_img,(450,900))
-            self.display.blit(self.won_img,(1250,900))
-            self.display.blit(self.credits1_img,(1500,900))
-
+            self.draw_text(str(self.casino.money_invested), 45, 580, 970)
+            self.display.blit(self.won_img,(1210,900))
+            self.display.blit(self.credits1_img,(1445,900))
+            self.draw_text(str(self.casino.player_money), 45, 1550, 970)
+            self.display.blit(self.spins_img, (1680, 905))
+            self.draw_text(str(self.casino.spins), 45, 1800, 970)
 
             self.window.blit(pygame.transform.scale(self.display, (self.DISPLAY_W, self.DISPLAY_H)), (0, 0))
             pygame.display.update()
@@ -327,9 +341,11 @@ class Payout(object):
         # TODO moze i u konstruktoru
         self.player_money = 100.0
         self.start_bank_money = 10000.0
+        self.spins=10
+        self.betmax=5
 
         self.bank_money = self.start_bank_money
-        self.money_invested = 0.0
+        self.money_invested = 1
 
     def calculate_best_from_begginging(self, row):
         current_el = row[0]
@@ -483,7 +499,7 @@ class Payout(object):
         
 
     def calculateWinnings(self):
-        money_invested = self.money_invested
+        self.money_invested = self.money_invested
         # provera reel-ova, obraditi self.fruits i self.array
 
         # horizontalni #no 1, 2, 3
