@@ -347,9 +347,8 @@ class Payout(object):
         self.bank_money = self.start_bank_money
 
         self.special_symbol = None
-        self.free_bets = 0.0
+        self.free_bets = 0
         self.active_special = False
-        self.fixed = False
 
         self.money_invested = 0.0
     
@@ -377,12 +376,9 @@ class Payout(object):
         if number == 10:
             return "pyramid"
 
-    def fix_columns(self, symbol, length):
-        for i in range(3):
-            for j in range(5):
-                if j < length:
-                    self.fruits[i][j] = symbol
-    
+    def fix_columns(self, symbol, list):
+        # TODO u listi se nalaze indeksi tabela u kojima se nalazi symbol
+        pass
 
     def calculate_best_from_begginging(self, row):
         current_el = row[0]
@@ -396,58 +392,20 @@ class Payout(object):
                     current_el = row[j]
             elif current_el == row[j] or row[j] == 'pyramid':
                     max_length += 1
+            else: 
+                break
+        return self.evaluate(current_el, max_length)
 
-        # check for pyramids
-        pyramid_count = 0
-        for element in row:
-            if element == 'pyramid':
-                pyramid_count += 1
-        if pyramid_count >= 3:
-            self.free_bets += 10
-            self.special_symbol = self.get_random_element(random.randint(10))
-            return True, self.evaluate(current_el, max_length)
-
-        return False, self.evaluate(current_el, max_length)
-    
-    def calculate_fix(self, row):
-        current_el = row[0]
-        length = len(row)
-
-        max_length = 1
-        for j in range(1, length):
-            if current_el == 'pyramid':
-                max_length += 1
-                if row[j] != 'pyramid':
-                    current_el = row[j]
-            elif current_el == row[j] or row[j] == 'pyramid':
-                    max_length += 1
-
-        return self.evaluate(self.special_symbol, max_length)
-               
-    def calculate_special_best_from_begginning(self, row):
-        current_el = row[0]
-        length = len(row)
-
-        max_length = 1
-        for j in range(1, length):
-            if current_el == 'pyramid':
-                max_length += 1
-                if row[j] != 'pyramid':
-                    current_el = row[j]
-            elif current_el == row[j] or row[j] == 'pyramid':
-                    max_length += 1
-
-        pyramid_count = 0
-        for element in row:
-            if element == 'pyramid':
-                pyramid_count += 1
-        if pyramid_count >= 3 and self.fixed != True:
-            self.free_bets += 10
-
-        if current_el == self.special_symbol and max_length >= 3 and self.fixed != True:
-            self.fix_columns(self.special_symbol, max_length)
-            self.fixed = True
-            return self.fixed,
+    def check_special_symbol(self, symbol):
+        counter = 0
+        columns = []
+        for i in range(5):
+           for j in range(3):
+               if self.fruits[j][i] == symbol:
+                   columns.append(i)
+                   counter += 1
+                   break
+        return columns, counter
             
     def setFruitsState(self, fruits):
         self.fruits = fruits
@@ -463,138 +421,91 @@ class Payout(object):
             if length == 3:
                 winnings = 0.50
             if length == 4:
-                winnings = 5.00
+                winnings = 3.00
             if length == 5:
-                winnings = 10.0
+                winnings = 7.5
         
         if element == 'beta':
             if length == 3:
-                winnings = 0.5
+                winnings = 0.8
             if length == 4:
-                winnings = 5.0
-            if length == 5:
-                winnings = 12.50
-
-        if element == 'mi':
-            if length == 3:
-                winnings = 0.50
-            if length == 4:
-                winnings = 5.0
+                winnings = 4.0
             if length == 5:
                 winnings = 15.0
 
-        if element == 'omega':
+        if element == 'mi':
             if length == 3:
-                winnings = 0.8
+                winnings = 0.9
             if length == 4:
-                winnings = 6.0
+                winnings = 4.5
             if length == 5:
                 winnings = 20.0
 
+        if element == 'omega':
+            if length == 3:
+                winnings = 0.1
+            if length == 4:
+                winnings = 1.0
+            if length == 5:
+                winnings = 3.0
+
         if element == 'pi':
             if length == 3:
-                winnings = 0.8
+                winnings = 0.2
             if length == 4:
-                winnings = 6.0
+                winnings = 2.0
             if length == 5:
-                winnings = 25.0
+                winnings = 4.0
 
         if element == 'apple':
-            if length == 2:
-                winnings = 0.2
             if length == 3:
-                winnings = 1.0
+                winnings = 3.5
             if length == 4:
-                winnings = 7.0
+                winnings = 20.0
             if length == 5:
-                winnings = 50.0
+                winnings = 400.0
 
         if element == 'pineapple':
-            if length == 2:
-                winnings = 0.30
             if length == 3:
-                winnings = 1.2
+                winnings = 4.0
             if length == 4:
-                winnings = 7.5
+                winnings = 25.0
             if length == 5:
-                winnings = 75.0
+                winnings = 500.0
 
         if element == 'banana':
-            if length == 2:
-                winnings = 0.4
             if length == 3:
-                winnings = 1.4
+                winnings = 1.5
             if length == 4:
-                winnings = 8.0
+                winnings = 3.0
+            if length == 5:
+                winnings = 20.0
+
+        if element == 'vine':
+            if length == 3:
+                winnings = 3.0
+            if length == 4:
+                winnings = 10.0
             if length == 5:
                 winnings = 100.0
 
-        if element == 'vine':
-            if length == 2:
-                winnings = 0.5
-            if length == 3:
-                winnings = 1.6
-            if length == 4:
-                winnings = 9.0
-            if length == 5:
-                winnings = 150.0
-
         if element == 'monkey':
-            if length == 2:
-                winnings = 1.0
             if length == 3:
-                winnings = 2.0
+                winnings = 5.0
             if length == 4:
-                winnings = 10.0
+                winnings = 100.0
             if length == 5:
-                winnings = 500.0
+                winnings = 3000.0
         
         if element == 'pyramid':
-            if length == 2:
-                winnings = 1.0
             if length == 3:
-                winnings = 2.0
+                winnings = 5.0
             if length == 4:
-                winnings = 10.0
+                winnings = 80.0
             if length == 5:
-                winnings = 500.0   
+                winnings = 3000.0   
         
         return winnings * self.money_invested
-
-    def calculate_fixed_winnings(self):
-        winnings = 0.0
-        for row in self.fruits:
-            winnings += self.calculate_fix(row)
-
-        # no 4
-        pom_list = [self.array[0], self.array[6], self.array[12], self.array[8], self.array[4]]
-        winnings += self.calculate_fix(pom_list)
-
-        # no 5
-        pom_list = [self.array[10], self.array[6], self.array[2], self.array[8], self.array[14]]
-        winnings += self.calculate_fix(pom_list)
-       
-        # no 6
-        pom_list = [self.array[0], self.array[6], self.array[2], self.array[8], self.array[4]]
-        winnings += self.calculate_fix(pom_list)
-
-        # no 7
-        pom_list = [self.array[5], self.array[11], self.array[7], self.array[13], self.array[9]]
-        winnings += self.calculate_fix(pom_list)
-
-        # no 8
-        pom_list = [self.array[5], self.array[1], self.array[7], self.array[3], self.array[9]]
-        winnings += self.calculate_fix(pom_list)
-
-        # no 9
-        pom_list = [self.array[10], self.array[6], self.array[12], self.array[8], self.array[14]]
-        winnings += self.calculate_fix(pom_list)
-
-        # no 10
-        pom_list = [self.array[0], self.array[6], self.array[12], self.array[13], self.array[14]]
-        winnings += self.calculate_fix(pom_list)
-
-        self.payToPlayer(winnings)
 
     def calculateWinnings(self):
         if self.active_special == False:
@@ -602,133 +513,109 @@ class Payout(object):
             # provera reel-ova, obraditi self.fruits i self.array
     
             # horizontalni #no 1, 2, 3
-            best_special = None
+            columns, pyramide_counter = self.check_special_symbol('pyramid')
+            if pyramide_counter >= 3:
+                self.active_special = True
+                self.free_bets = 10
+                self.special_symbol = self.get_random_element(random.randint(0, 10))
+                print(self.special_symbol + " broj: " + str(pyramide_counter))
+
             winnings = 0.0
             for row in self.fruits:
-                special, win = self.calculate_best_from_begginging(row)
+                win = self.calculate_best_from_begginging(row)
                 winnings += win
-                if special == True:
-                    best_special = True
     
             # no 4
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[8], self.array[4]]
-            special, win = self.calculate_best_from_begginging(pom_list)
+            win = self.calculate_best_from_begginging(pom_list)
             winnings += win
-            if special == True:
-                best_special = True
             
             # no 5
             pom_list = [self.array[10], self.array[6], self.array[2], self.array[8], self.array[14]]
-            special, win = self.calculate_best_from_begginging(pom_list)
+            win = self.calculate_best_from_begginging(pom_list)
             winnings += win
-            if special == True:
-                best_special = True
-    
+
             # no 6
             pom_list = [self.array[0], self.array[6], self.array[2], self.array[8], self.array[4]]
-            special, win = self.calculate_best_from_begginging(pom_list)
+            win = self.calculate_best_from_begginging(pom_list)
             winnings += win
-            if special == True:
-                best_special = True
     
             # no 7
             pom_list = [self.array[5], self.array[11], self.array[7], self.array[13], self.array[9]]
-            special ,win = self.calculate_best_from_begginging(pom_list)
+            win = self.calculate_best_from_begginging(pom_list)
             winnings += win
-            if special == True:
-                best_special = True
     
             # no 8
             pom_list = [self.array[5], self.array[1], self.array[7], self.array[3], self.array[9]]
-            special, win = self.calculate_best_from_begginging(pom_list)
+            win = self.calculate_best_from_begginging(pom_list)
             winnings += win
-            if special == True:
-                best_special = True
     
             # no 9
             pom_list = [self.array[10], self.array[6], self.array[12], self.array[8], self.array[14]]
-            special, win = self.calculate_best_from_begginging(pom_list)
+            win = self.calculate_best_from_begginging(pom_list)
             winnings += win
-            if special == True:
-                best_special = True
     
             # no 10
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[13], self.array[14]]
-            special , winnings = self.calculate_best_from_begginging(pom_list)
+            win = self.calculate_best_from_begginging(pom_list)
             winnings += win
-            if special == True:
-                best_special = True
     
             self.payToPlayer(winnings)
     
-            if best_special != None:
-                self.active_special = True
-
-        if self.active_special == True:
+        elif self.active_special == True:
             self.free_bets -=  1
             # provera reel-ova, obraditi self.fruits i self.array
     
             # horizontalni #no 1, 2, 3
             winnings = 0.0
+
+            fixed_columns_special, special_counter = self.check_special_symbol("pyramid")
+            fixed_columns_pyramide, pyramide_counter = self.check_special_symbol(self.special_symbol)
+
+            if pyramide_counter >= 3:
+                self.free_bets += 10
+
+            if special_counter >= 3:
+                self.fix_columns(self.special_symbol)
+                return 10 * self.evaluate(self.special_symbol, special_counter)
+
             for row in self.fruits:
-                special, win = self.calculate_best_from_begginging(row)
-                winnings += win
-                if special == True:
-                    best_special = True
+                winnings += self.calculate_best_from_begginging(row)
+
+            pom_list = []
     
             # no 4
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[8], self.array[4]]
-            special, win = self.calculate_best_from_begginging(pom_list)
-            winnings += win
-            if special == True:
-                best_special = True
+            winnings += self.calculate_best_from_begginging(pom_list)
             
             # no 5
             pom_list = [self.array[10], self.array[6], self.array[2], self.array[8], self.array[14]]
-            special, win = self.calculate_best_from_begginging(pom_list)
-            winnings += win
-            if special == True:
-                best_special = True
+            winnings += self.calculate_best_from_begginging(pom_list)
     
             # no 6
             pom_list = [self.array[0], self.array[6], self.array[2], self.array[8], self.array[4]]
-            special, win = self.calculate_best_from_begginging(pom_list)
-            winnings += win
-            if special == True:
-                best_special = True
+            winnings += self.calculate_best_from_begginging(pom_list)
     
             # no 7
             pom_list = [self.array[5], self.array[11], self.array[7], self.array[13], self.array[9]]
-            special ,win = self.calculate_best_from_begginging(pom_list)
-            winnings += win
-            if special == True:
-                best_special = True
+            winnings += self.calculate_best_from_begginging(pom_list)
     
             # no 8
             pom_list = [self.array[5], self.array[1], self.array[7], self.array[3], self.array[9]]
-            special, win = self.calculate_best_from_begginging(pom_list)
-            winnings += win
-            if special == True:
-                best_special = True
+            winnings += self.calculate_best_from_begginging(pom_list)
     
             # no 9
             pom_list = [self.array[10], self.array[6], self.array[12], self.array[8], self.array[14]]
-            special, win = self.calculate_best_from_begginging(pom_list)
-            winnings += win
-            if special == True:
-                best_special = True
+            winnings += self.calculate_best_from_begginging(pom_list)
     
             # no 10
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[13], self.array[14]]
-            special , winnings = self.calculate_best_from_begginging(pom_list)
-            winnings += win
-            if special == True:
-                best_special = True
+            winnings += self.calculate_best_from_begginging(pom_list)
     
             self.payToPlayer(winnings)
-            # TODO calculate winnings
 
             if self.free_bets == 0:
+                self.special_symbol = None
                 self.active_special = False
 
     def payToMachine(self, money) -> Boolean:
