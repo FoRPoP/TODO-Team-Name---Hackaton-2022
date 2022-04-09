@@ -50,6 +50,8 @@ class Game():
         self.spins_img = pygame.image.load('data/images/spins.png')
 
 
+
+
         self.spin_img = pygame.image.load('./data/images/spinbutton.png')
         self.autostart_img = pygame.image.load('./data/images/autostart.png')
         self.lines_img = pygame.image.load('./data/images/lines.png')
@@ -58,6 +60,7 @@ class Game():
         self.soundoff_img = pygame.image.load('./data/images/sound-off.png')
         self.return_img = pygame.image.load('./data/images/return.png')
         self.sound=True
+        self.lines=False
 
         self.spin_button = button.Button(1920/2-self.spin_img.get_width()/2, 840, self.spin_img, 1)
         self.autostart_button = button.Button(0,300,self.autostart_img,1)
@@ -127,6 +130,7 @@ class Game():
         self.frame_counter = 0
 
         self.casino = Payout()
+        self.spincounter=0
 
     def game_loop(self):
 
@@ -143,6 +147,12 @@ class Game():
             if self.spin == True and self.spinning == False:
                 self.velocity = 100
                 self.spinning = True
+
+            if self.spin == False and self.spinning == False and self.spincounter>0:
+                if self.casino.payToMachine(self.casino.money_invested):
+                    self.spincounter -= 1
+                    self.casino.spins -= 1
+                    self.spin = True
 
             collisions = []
 
@@ -226,8 +236,8 @@ class Game():
                         self.spin = self.casino.payToMachine(self.casino.money_invested)
                 if event.type == MOUSEBUTTONDOWN:
                     mx, my = pygame.mouse.get_pos()
-                    print(f'mouse x je {mx}')
-                    print(f'mouse y je {my}')
+                    print(f'mouse  je ({mx},{my})')
+
 
             self.display.blit(self.table_borders_surface, (0, 0))
 
@@ -235,12 +245,48 @@ class Game():
                 self.spin = self.casino.payToMachine(self.casino.money_invested)
 
             if self.autostart_button.draw(self.display):
-                while self.casino.spins>0:
-                    self.casino.spins = self.casino.spins-1
-                    self.spin = self.casino.payToMachine(self.casino.money_invested)
+                if self.casino.spins>0:
+                    self.spincounter = self.casino.spins
 
             if self.lines_button.draw(self.display):
-                print("Clicked")
+                self.lines=~self.lines
+
+            if self.lines:
+                pygame.draw.line(self.display, (255, 0, 0), (453, 367), (1461, 367), 8)
+                pygame.draw.line(self.display, (255, 0, 0), (453, 572), (1461, 572), 8)
+                pygame.draw.line(self.display, (255, 0, 0), (453, 767), (1461, 767), 8)
+
+                pygame.draw.line(self.display, (0, 255, 0), (453, 767), (958, 367), 8)
+                pygame.draw.line(self.display, (0, 255, 0), (958, 367), (1461, 767), 8)
+
+                pygame.draw.line(self.display, (0, 0, 255), (453, 367), (958, 767), 8)
+                pygame.draw.line(self.display, (0, 0, 255), (958, 767), (1461, 367), 8)
+
+                pygame.draw.line(self.display, (100, 0, 255), (456, 574), (704, 371), 8)
+                pygame.draw.line(self.display, (100, 0, 255), (704, 371), (959, 573), 8)
+                pygame.draw.line(self.display, (100, 0, 255), (959, 573), (1210, 370), 8)
+                pygame.draw.line(self.display, (100, 0, 255), (1210, 370), (1461, 571), 8)
+
+                pygame.draw.line(self.display, (10, 100, 155), (457, 574), (705, 770), 8)
+                pygame.draw.line(self.display, (10, 100, 155), (705, 770), (962, 578), 8)
+                pygame.draw.line(self.display, (10, 100, 155), (962, 578), (1220, 770), 8)
+                pygame.draw.line(self.display, (10, 100, 155), (1220, 770), (1457, 573), 8)
+
+                pygame.draw.line(self.display, (255, 255, 50), (461, 361), (703, 555), 8)
+                pygame.draw.line(self.display, (255, 255, 50), (703, 555), (960, 356), 8)
+                pygame.draw.line(self.display, (255, 255, 50), (960, 356), (1208, 553), 8)
+                pygame.draw.line(self.display, (255, 255, 50), (1208, 553), (1453, 361), 8)
+
+                pygame.draw.line(self.display, (204, 0, 102), (463, 770), (707, 582), 8)
+                pygame.draw.line(self.display, (204, 0, 102), (707, 582), (958, 780), 8)
+                pygame.draw.line(self.display, (204, 0, 102), (958, 780), (1207, 581), 8)
+                pygame.draw.line(self.display, (204, 0, 102), (1207, 581), (1455, 765), 8)
+
+                pygame.draw.line(self.display, (255, 128, 0), (476, 358), (978, 770), 8)
+                pygame.draw.line(self.display, (255, 128, 0), (978, 770), (1455, 775), 8)
+
+
+
 
             if self.betmax_button.draw(self.display):
                 self.casino.money_invested=self.casino.betmax
@@ -267,6 +313,12 @@ class Game():
             self.draw_text(str(self.casino.player_money), 45, 1550, 970)
             self.display.blit(self.spins_img, (1680, 905))
             self.draw_text(str(self.casino.spins), 45, 1800, 970)
+
+
+
+
+
+
 
             self.window.blit(pygame.transform.scale(self.display, (self.DISPLAY_W, self.DISPLAY_H)), (0, 0))
             pygame.display.update()
@@ -351,7 +403,7 @@ class Payout(object):
         self.active_special = False
         self.fixed = False
 
-        self.money_invested = 0.0
+        self.money_invested = 1
     
     def get_random_element(self, number):
         if number == 0:
