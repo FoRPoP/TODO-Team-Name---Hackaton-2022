@@ -41,13 +41,27 @@ class Game():
         self.pineapple_img = pygame.image.load('data/images/pineapple.png')
         self.rectangle_img = pygame.image.load('data/images/rectangle.png')
 
+        self.lines1_img = pygame.image.load('data/images/lines1.png')
+        self.totalbet_img = pygame.image.load('data/images/totalbet.png')
+        self.won_img = pygame.image.load('data/images/won.png')
+        self.credits1_img = pygame.image.load('data/images/credits1.png')
+
+
         self.spin_img = pygame.image.load('./data/images/spinbutton.png')
-        # self.options_img = pygame.image.load('./data/images/options.png').convert_alpha()
-        # self.credits_img = pygame.image.load('./data/images/credits.png').convert_alpha()
+        self.autostart_img = pygame.image.load('./data/images/autostart.png')
+        self.lines_img = pygame.image.load('./data/images/lines.png')
+        self.betmax_img = pygame.image.load('./data/images/betmax.png')
+        self.soundon_img = pygame.image.load('./data/images/sound.png')
+        self.soundoff_img = pygame.image.load('./data/images/sound-off.png')
+        self.sound=True
 
         self.spin_button = button.Button(1920/2-self.spin_img.get_width()/2, 840, self.spin_img, 1)
-        # self.options_button = button.Button(self.optionsx, self.optionsy, self.options_img, 2)
-        # self.credits_button = button.Button(self.creditsx, self.creditsy, self.credits_img, 2)
+        self.autostart_button = button.Button(0,300,self.autostart_img,1)
+        self.lines_button = button.Button(1720,300,self.lines_img,1)
+        self.betmax_button = button.Button(1705,600,self.betmax_img,1)
+        self.soundon_button = button.Button(1805, 30, self.soundon_img, 0.2)
+        self.soundoff_button = button.Button(1805, 30, self.soundoff_img, 0.2)
+
 
         self.pineapple_img.set_colorkey((255, 255, 255))
         self.rectangle_img.set_colorkey((255, 255, 255))
@@ -192,6 +206,29 @@ class Game():
 
             if self.spin_button.draw(self.display):
                 self.spin = self.casino.payToMachine(1)
+
+            if self.autostart_button.draw(self.display):
+                print("Clicked")
+
+            if self.lines_button.draw(self.display):
+                print("Clicked")
+
+            if self.betmax_button.draw(self.display):
+                print("Clicked")
+
+
+            if self.sound:
+                if self.soundon_button.draw(self.display):
+                   self.sound= False
+            else:
+                if self.soundoff_button.draw(self.display):
+                    self.sound = True
+
+            self.display.blit(self.lines1_img,(200,900))
+            self.display.blit(self.totalbet_img,(450,900))
+            self.display.blit(self.won_img,(1250,900))
+            self.display.blit(self.credits1_img,(1500,900))
+
 
             self.window.blit(pygame.transform.scale(self.display, (self.DISPLAY_W, self.DISPLAY_H)), (0, 0))
             pygame.display.update()
