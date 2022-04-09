@@ -393,6 +393,7 @@ class Payout(object):
         # TODO moze i u konstruktoru
         self.player_money = 100.0
         self.start_bank_money = 10000.0
+        self.current_winnings = 0.0
         self.spins=10
         self.betmax=5
 
@@ -404,6 +405,11 @@ class Payout(object):
 
         self.money_invested = 1
     
+    def set_current_winnings(self, value):
+        self.current_winnings = value
+    def get_current_winnings(self):
+        return self.get_current_winnings
+
     def get_random_element(self, number):
         if number == 0:
             return "alfa"
@@ -685,6 +691,7 @@ class Payout(object):
 
     def payToPlayer(self, money):
         self.player_money += money
+        self.set_current_winnings(money)
     
     def calculateRTP(self):
         pass
