@@ -57,6 +57,7 @@ class Game():
         self.soundon_img = pygame.image.load('./data/images/sound.png')
         self.soundoff_img = pygame.image.load('./data/images/sound-off.png')
         self.return_img = pygame.image.load('./data/images/return.png')
+        self.title_img = pygame.image.load('./data/images/title.png')
         self.sound=True
         self.lines=False
 
@@ -201,6 +202,7 @@ class Game():
 
             self.display.blit(self.background_img, (0, 0))
             self.display.blit(self.table_img, (0, 0))
+            self.display.blit(self.title_img, (0, 0))
 
             if self.spin == False and self.spinning == False and self.casino.free_bets > 0:
                 self.spin = self.casino.payToMachine(self.casino.money_invested)
@@ -291,6 +293,8 @@ class Game():
                             pass
                             # pygame.mixer.music.play()
                     if event.key == K_SPACE:
+                        for i in range(10):
+                            self.win_lines[i] = False
                         self.spin = self.casino.payToMachine(self.casino.money_invested)
                 if event.type == MOUSEBUTTONDOWN:
                     mx, my = pygame.mouse.get_pos()
@@ -358,18 +362,18 @@ class Game():
                     pygame.draw.line(self.display, (255, 0, 0), (453, 767), (1461, 767), 8)
 
                 elif i == 3 and self.win_lines[i]:
-                    pygame.draw.line(self.display, (0, 255, 0), (453, 767), (958, 367), 8)
-                    pygame.draw.line(self.display, (0, 255, 0), (958, 367), (1461, 767), 8)
+                    pygame.draw.line(self.display, (0, 0, 255), (453, 367), (958, 767), 8)
+                    pygame.draw.line(self.display, (0, 0, 255), (958, 767), (1461, 367), 8)
 
                 elif i == 4 and self.win_lines[i]:
                     pygame.draw.line(self.display, (0, 255, 0), (453, 767), (958, 367), 8)
                     pygame.draw.line(self.display, (0, 255, 0), (958, 367), (1461, 767), 8)
 
                 elif i == 5 and self.win_lines[i]:
-                    pygame.draw.line(self.display, (100, 0, 255), (456, 574), (704, 371), 8)
-                    pygame.draw.line(self.display, (100, 0, 255), (704, 371), (959, 573), 8)
-                    pygame.draw.line(self.display, (100, 0, 255), (959, 573), (1210, 370), 8)
-                    pygame.draw.line(self.display, (100, 0, 255), (1210, 370), (1461, 571), 8)
+                    pygame.draw.line(self.display, (255, 255, 50), (461, 361), (703, 555), 8)
+                    pygame.draw.line(self.display, (255, 255, 50), (703, 555), (960, 356), 8)
+                    pygame.draw.line(self.display, (255, 255, 50), (960, 356), (1208, 553), 8)
+                    pygame.draw.line(self.display, (255, 255, 50), (1208, 553), (1453, 361), 8)
 
                 elif i == 6 and self.win_lines[i]:
                     pygame.draw.line(self.display, (10, 100, 155), (457, 574), (705, 770), 8)
@@ -378,10 +382,10 @@ class Game():
                     pygame.draw.line(self.display, (10, 100, 155), (1220, 770), (1457, 573), 8)
 
                 elif i == 7 and self.win_lines[i]:
-                    pygame.draw.line(self.display, (255, 255, 50), (461, 361), (703, 555), 8)
-                    pygame.draw.line(self.display, (255, 255, 50), (703, 555), (960, 356), 8)
-                    pygame.draw.line(self.display, (255, 255, 50), (960, 356), (1208, 553), 8)
-                    pygame.draw.line(self.display, (255, 255, 50), (1208, 553), (1453, 361), 8)
+                    pygame.draw.line(self.display, (100, 0, 255), (456, 574), (704, 371), 8)
+                    pygame.draw.line(self.display, (100, 0, 255), (704, 371), (959, 573), 8)
+                    pygame.draw.line(self.display, (100, 0, 255), (959, 573), (1210, 370), 8)
+                    pygame.draw.line(self.display, (100, 0, 255), (1210, 370), (1461, 571), 8)
 
                 elif i == 8 and self.win_lines[i]:
                     pygame.draw.line(self.display, (204, 0, 102), (463, 770), (707, 582), 8)
@@ -422,6 +426,8 @@ class Game():
             self.draw_text(str(self.casino.player_money), 45, 1550, 970)
             self.display.blit(self.spins_img, (200,900))
             self.draw_text(str(self.casino.free_bets), 45, 320,970)
+
+            self.display.blit(self.title_img, (0, 0))
 
 
 
@@ -541,7 +547,10 @@ class Payout(object):
             return "pyramid"
 
     def fix_columns(self, symbol, list):
-        # TODO u listi se nalaze indeksi tabela u kojima se nalazi symbol
+
+        #for l in list:
+           # for i in range(3):
+               # self.game..set(symbol)
         pass
 
     def calculate_best_from_begginging(self, row):
@@ -752,14 +761,14 @@ class Payout(object):
             # horizontalni #no 1, 2, 3
             winnings = 0.0
 
-            fixed_columns_special, special_counter = self.check_special_symbol("pyramid")
-            fixed_columns_pyramide, pyramide_counter = self.check_special_symbol(self.special_symbol)
+            fixed_columns_special, special_counter = self.check_special_symbol(self.special_symbol)
+            fixed_columns_pyramide, pyramide_counter = self.check_special_symbol("pyramid")
 
             if pyramide_counter >= 3:
                 self.free_bets += 10
 
             if special_counter >= 3:
-                self.fix_columns(self.special_symbol)
+                self.fix_columns(self.special_symbol,fixed_columns_special)
                 return 10 * self.evaluate(self.special_symbol, special_counter)
 
 
