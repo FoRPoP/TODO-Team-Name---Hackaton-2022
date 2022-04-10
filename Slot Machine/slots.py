@@ -133,6 +133,39 @@ class Game():
                 reel_tmp += self.reel_numbers[i]
             self.reel_numbers[i] = reel_tmp
 
+        # for i in range(len(self.reel_numbers)):
+            # for j in range(len((self.reel_numbers[i]))):
+                # if self.reel_numbers[i][j] == 0:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                # if self.reel_numbers[i][j] == 1:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                # if self.reel_numbers[i][j] == 2:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
+                # if self.reel_numbers[i][j] == 3:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                # if self.reel_numbers[i][j] == 4:
+                    # self.default_reels[i].append(Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                # if self.reel_numbers[i][j] == 5:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                # if self.reel_numbers[i][j] == 6:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
+                # if self.reel_numbers[i][j] == 7:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
+                # if self.reel_numbers[i][j] == 8:
+                    # self.default_reels[i].append(Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
+                # if self.reel_numbers[i][j] == 9:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
+                # if self.reel_numbers[i][j] == 10:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
         for i in range(len(self.reel_numbers)):
             for j in range(len((self.reel_numbers[i]))):
                 if self.reel_numbers[i][j] == 0:
@@ -140,32 +173,32 @@ class Game():
                         Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
                 if self.reel_numbers[i][j] == 1:
                     self.default_reels[i].append(
-                        Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                        Tile(350 + i * 254, 675 - j * 200, self.monkey_img, i, self.display, "monkey"))
                 if self.reel_numbers[i][j] == 2:
                     self.default_reels[i].append(
                         Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
                 if self.reel_numbers[i][j] == 3:
                     self.default_reels[i].append(
-                        Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                        Tile(350 + i * 254, 675 - j * 200, self.banana_img, i, self.display, "banana"))
                 if self.reel_numbers[i][j] == 4:
-                    self.default_reels[i].append(Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                    self.default_reels[i].append(Tile(350 + i * 254, 675 - j * 200, self.pi_img, i, self.display, "pi"))
                 if self.reel_numbers[i][j] == 5:
                     self.default_reels[i].append(
-                        Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                        Tile(350 + i * 254, 675 - j * 200, self.omega_img, i, self.display, "omega"))
                 if self.reel_numbers[i][j] == 6:
                     self.default_reels[i].append(
-                        Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
+                        Tile(350 + i * 254, 675 - j * 200, self.pineapple_img, i, self.display, "pineapple"))
                 if self.reel_numbers[i][j] == 7:
                     self.default_reels[i].append(
-                        Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
+                        Tile(350 + i * 254, 675 - j * 200, self.apple_img, i, self.display, "apple"))
                 if self.reel_numbers[i][j] == 8:
-                    self.default_reels[i].append(Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
+                    self.default_reels[i].append(Tile(350 + i * 254, 675 - j * 200, self.mi_img, i, self.display, "mi"))
                 if self.reel_numbers[i][j] == 9:
                     self.default_reels[i].append(
-                        Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
+                        Tile(350 + i * 254, 675 - j * 200, self.beta_img, i, self.display, "beta"))
                 if self.reel_numbers[i][j] == 10:
                     self.default_reels[i].append(
-                        Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                        Tile(350 + i * 254, 675 - j * 200, self.alfa_img, i, self.display, "alfa"))
 
         self.reel1 = []
         self.reel2 = []
@@ -200,7 +233,7 @@ class Game():
         column3 = [(1112, 675), (1112, 475), (1112, 275)]
         column4 = [(1366, 675), (1366, 475), (1366, 275)]
 
-        path = f'./data/images/{symbol}1.png'
+        path = f'./data/images/{symbol}.png'
         surface = pygame.image.load(path)
 
         for i in indexes:
@@ -546,7 +579,7 @@ class Tile():
 
 class Payout(object):
 
-    def __init__(self,game):
+    def __init__(self,game:Game):
         self.fruits = None
         self.array = None
         # TODO moze i u konstruktoru
@@ -736,8 +769,9 @@ class Payout(object):
             if pyramide_counter >= 3:
                 self.active_special = True
                 self.free_bets = 10
-                self.special_symbol = self.get_random_element(random.randint(0, 10))
-                print(self.special_symbol + " broj: " + str(pyramide_counter))
+                # self.special_symbol = self.get_random_element(random.randint(0, 10))
+                self.special_symbol = 'pyramid'
+                print(self.special_symbol)
 
             winnings = 0.0
             for i,row in enumerate(self.fruits):
@@ -803,7 +837,6 @@ class Payout(object):
         elif self.active_special == True:
             #self.free_bets -=  1
             # provera reel-ova, obraditi self.fruits i self.array
-    
             # horizontalni #no 1, 2, 3
             winnings = 0.0
 
@@ -813,18 +846,16 @@ class Payout(object):
             if pyramide_counter >= 3:
                 self.free_bets += 10
 
+            print(f"specijalnih karaktera ima: {special_counter} a karakter je {special_counter}")
             if special_counter >= 3:
-                self.fix_columns(self.special_symbol,fixed_columns_special)
-                winning = 10 * self.evaluate(self.special_symbol, special_counter)
-                print(f'Dobitak je: {winning}')
-                self.payToPlayer(winning)
+                #self.fix_columns(self.special_symbol,fixed_columns_special)
+                special_winning = 10 * self.evaluate(self.special_symbol, special_counter)
+                self.game.show_special_element(self.special_symbol, fixed_columns_special)
+                winnings += special_winning
 
                 if self.free_bets == 0:
                     self.special_symbol = None
                     self.active_special = False
-
-                return None
-
 
             for i, row in enumerate(self.fruits):
                 win = self.calculate_best_from_begginging(row)
