@@ -291,7 +291,7 @@ class Game():
                 if velocity > 0:
                     for tile in self.reels[i]:
                         tile.move(velocity)
-                self.velocity[i] -= 2.5
+                self.velocity[i] -= 1
 
                 if velocity == 0:
                     self.velocities_0_counter += 1
@@ -522,11 +522,9 @@ class Game():
 
             self.display.blit(self.title_img, (0, 0))
 
-
-
             self.window.blit(pygame.transform.scale(self.display, (self.DISPLAY_W, self.DISPLAY_H)), (0, 0))
             pygame.display.update()
-            self.clock.tick(120)
+            self.clock.tick(60)
 
     def draw_text(self, text, size, x, y):
         font = pygame.font.Font(self.font_name, size)
