@@ -77,9 +77,13 @@ class CreditsMenu(Menu):
 
 
             self.game.draw_text('Credits', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
-            self.game.draw_text('sound icons= https://www.flaticon.com/free-icons/sound', 15, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 10)
-            self.game.draw_text('https://www.flaticon.com/free-icons/mute', 15, self.game.DISPLAY_W / 2,
+            self.game.draw_text('sound on icons - https://www.flaticon.com/free-icons/sound', 15, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 10)
+            self.game.draw_text('sound off icons  -https://www.flaticon.com/free-icons/mute', 15, self.game.DISPLAY_W / 2,
                                 self.game.DISPLAY_H / 2 + 30)
+            self.game.draw_text('return icons  - https://www.flaticon.com/free-icons/return', 15, self.game.DISPLAY_W / 2,
+                                self.game.DISPLAY_H / 2 + 70)
 
+            self.game.draw_text('Author: mattn - https://opengameart.org/content/fruit-graphics-from-caveexpress', 15, self.game.DISPLAY_W / 2,
+                                self.game.DISPLAY_H / 2 + 100)
 
             self.blit_screen()

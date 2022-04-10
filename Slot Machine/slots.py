@@ -289,14 +289,11 @@ class Game():
                         new_reel[j].set_position(675 - j * 200)
                         self.reels[i] = new_reel
                 
-               
+                row1 = [collisions[2].get_type() , collisions[5].get_type() , collisions[8].get_type() , collisions[11].get_type() , collisions[14].get_type()]
+                row2 = [collisions[1].get_type() , collisions[4].get_type() , collisions[7].get_type() , collisions[10].get_type() , collisions[13].get_type()]
+                row3 = [collisions[0].get_type() , collisions[3].get_type() , collisions[6].get_type() , collisions[9].get_type() , collisions[12].get_type()]
 
-                collisions_matrix = []
-                for i in range(3):
-                    row = []
-                    for j in range(5):
-                        row.append(collisions[j*3 + i].get_type())
-                    collisions_matrix.append(row)
+                collisions_matrix = [row1, row2, row3]
 
                 self.casino.setFruitsState(collisions_matrix)
                 self.casino.calculateWinnings()
@@ -721,7 +718,6 @@ class Payout(object):
             winnings = 0.0
             for i,row in enumerate(self.fruits):
                 win = self.calculate_best_from_begginging(row)
-                print(f'linije sa brojem {i+1} je {row}')
                 if win:
                     self.game.win_lines[i] = True
                 winnings += win
@@ -729,7 +725,6 @@ class Payout(object):
             # no 4
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[8], self.array[4]]
             win = self.calculate_best_from_begginging(pom_list)
-            print(f'linije sa brojem 4 je {pom_list}')
             if win:
                 self.game.win_lines[3]=True
             winnings += win
@@ -737,7 +732,6 @@ class Payout(object):
             # no 5
             pom_list = [self.array[10], self.array[6], self.array[2], self.array[8], self.array[14]]
             win = self.calculate_best_from_begginging(pom_list)
-            print(f'linije sa brojem 5 je {pom_list}')
             if win:
                 self.game.win_lines[4]=True
 
@@ -746,7 +740,6 @@ class Payout(object):
             # no 6
             pom_list = [self.array[0], self.array[6], self.array[2], self.array[8], self.array[4]]
             win = self.calculate_best_from_begginging(pom_list)
-            print(f'linije sa brojem 6 je {pom_list}')
             if win:
                 self.game.win_lines[5]=True
             winnings += win
@@ -754,7 +747,6 @@ class Payout(object):
             # no 7
             pom_list = [self.array[5], self.array[11], self.array[7], self.array[13], self.array[9]]
             win = self.calculate_best_from_begginging(pom_list)
-            print(f'linije sa brojem 7 je {pom_list}')
             if win:
                 self.game.win_lines[6]=True
             winnings += win
@@ -801,8 +793,16 @@ class Payout(object):
                 self.free_bets += 10
 
             if special_counter >= 3:
-                self.fix_columns(self.special_symbol)
-                return 10 * self.evaluate(self.special_symbol, special_counter)
+                self.fix_columns(self.special_symbol,fixed_columns_special)
+                winning = 10 * self.evaluate(self.special_symbol, special_counter)
+                print(f'Dobitak je: {winning}')
+                self.payToPlayer(winning)
+
+                if self.free_bets == 0:
+                    self.special_symbol = None
+                    self.active_special = False
+
+                return None
 
 
             for i, row in enumerate(self.fruits):
@@ -871,10 +871,10 @@ class Payout(object):
     def payToMachine(self, money) -> Boolean:
         if self.free_bets > 0:
             self.free_bets -= 1
-            self.set_current_winnings(0.0)
+            # self.calculateWinnings()
             # TODO mozda ce biti bag, ako ima free betove, mora da se uzima previously, odnosno da mu se onesposobi da menja
             return True 
-        if self.player_money >= 0.0:
+        elif self.player_money >= 0.0:
             self.set_current_winnings(0.0)
             self.player_money -= money
             self.bank_money += money
