@@ -145,32 +145,32 @@ class Game():
                         Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
                 if self.reel_numbers[i][j] == 1:
                     self.default_reels[i].append(
-                        Tile(350 + i * 254, 675 - j * 200, self.monkey_img, i, self.display, "monkey"))
+                        Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
                 if self.reel_numbers[i][j] == 2:
                     self.default_reels[i].append(
                         Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
                 if self.reel_numbers[i][j] == 3:
                     self.default_reels[i].append(
-                        Tile(350 + i * 254, 675 - j * 200, self.banana_img, i, self.display, "banana"))
+                        Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
                 if self.reel_numbers[i][j] == 4:
-                    self.default_reels[i].append(Tile(350 + i * 254, 675 - j * 200, self.pi_img, i, self.display, "pi"))
+                    self.default_reels[i].append(Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
                 if self.reel_numbers[i][j] == 5:
                     self.default_reels[i].append(
-                        Tile(350 + i * 254, 675 - j * 200, self.omega_img, i, self.display, "omega"))
+                        Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
                 if self.reel_numbers[i][j] == 6:
                     self.default_reels[i].append(
-                        Tile(350 + i * 254, 675 - j * 200, self.pineapple_img, i, self.display, "pineapple"))
+                        Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
                 if self.reel_numbers[i][j] == 7:
                     self.default_reels[i].append(
-                        Tile(350 + i * 254, 675 - j * 200, self.apple_img, i, self.display, "apple"))
+                        Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
                 if self.reel_numbers[i][j] == 8:
-                    self.default_reels[i].append(Tile(350 + i * 254, 675 - j * 200, self.mi_img, i, self.display, "mi"))
+                    self.default_reels[i].append(Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
                 if self.reel_numbers[i][j] == 9:
                     self.default_reels[i].append(
-                        Tile(350 + i * 254, 675 - j * 200, self.beta_img, i, self.display, "beta"))
+                        Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
                 if self.reel_numbers[i][j] == 10:
                     self.default_reels[i].append(
-                        Tile(350 + i * 254, 675 - j * 200, self.alfa_img, i, self.display, "alfa"))
+                        Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
 
         self.reel1 = []
         self.reel2 = []
@@ -203,7 +203,7 @@ class Game():
         column3 = [(1112, 675), (1112, 475), (1112, 275)]
         column4 = [(1366, 675), (1366, 475), (1366, 275)]
 
-        path = f'data/images/{symbol}.png'
+        path = f'./data/images/{symbol}1.png'
         surface = pygame.image.load(path)
 
         for i in indexes:
@@ -296,29 +296,15 @@ class Game():
                     for j in range(len(new_reel)):
                         new_reel[j].set_position(675 - j * 200)
                         self.reels[i] = new_reel
-
-                print('*************************************')
-
-                for tile in collisions:
-                    print(tile.get_position())
-
-                print('*************************************')
-
-
                 
                 row1 = [collisions[2].get_type() , collisions[5].get_type() , collisions[8].get_type() , collisions[11].get_type() , collisions[14].get_type()]
                 row2 = [collisions[1].get_type() , collisions[4].get_type() , collisions[7].get_type() , collisions[10].get_type() , collisions[13].get_type()]
                 row3 = [collisions[0].get_type() , collisions[3].get_type() , collisions[6].get_type() , collisions[9].get_type() , collisions[12].get_type()]
 
-                print('***************************')
                 collisions_matrix = [row1, row2, row3]
-                for row in collisions_matrix:
-                    for el in row:
-                        print(el, end = ' ')
-                    print()
-                print('***************************')
 
                 self.casino.setFruitsState(collisions_matrix)
+
                 self.casino.calculateWinnings()
                 print(f'igrac ima novca: {self.casino.player_money}')
 
@@ -347,7 +333,6 @@ class Game():
                 if event.type == MOUSEBUTTONDOWN:
                     mx, my = pygame.mouse.get_pos()
                     print(f'mouse  je ({mx},{my})')
-
 
             self.display.blit(self.table_borders_surface, (0, 0))
 
@@ -477,8 +462,6 @@ class Game():
 
             self.display.blit(self.title_img, (0, 0))
 
-
-
             self.window.blit(pygame.transform.scale(self.display, (self.DISPLAY_W, self.DISPLAY_H)), (0, 0))
             pygame.display.update()
             self.clock.tick(120)
@@ -596,6 +579,7 @@ class Payout(object):
 
     def fix_columns(self, symbol, list):
         self.game.show_special_element(symbol, list)
+
 
     def calculate_best_from_begginging(self, row):
         current_el = row[0]
@@ -736,7 +720,7 @@ class Payout(object):
                 self.free_bets = 10
                 # TODO ukloniti
                 #self.special_symbol = self.get_random_element(random.randint(0, 10))
-                self.special_symbol = 'banana'
+                self.special_symbol = 'jungle'
                 print(self.special_symbol + " broj: " + str(pyramide_counter))
 
             winnings = 0.0
@@ -823,7 +807,15 @@ class Payout(object):
 
             if special_counter >= 3:
                 self.fix_columns(self.special_symbol,fixed_columns_special)
-                return 10 * self.evaluate(self.special_symbol, special_counter)
+                winning = 10 * self.evaluate(self.special_symbol, special_counter)
+                print(f'Dobitak je: {winning}')
+                self.payToPlayer(winning)
+
+                if self.free_bets == 0:
+                    self.special_symbol = None
+                    self.active_special = False
+
+                return None
 
 
             for i, row in enumerate(self.fruits):
@@ -882,7 +874,7 @@ class Payout(object):
             if win:
                 self.game.win_lines[9] = True
             winnings += win
-    
+ 
             self.payToPlayer(winnings)
 
             if self.free_bets == 0:
@@ -892,10 +884,10 @@ class Payout(object):
     def payToMachine(self, money) -> Boolean:
         if self.free_bets > 0:
             self.free_bets -= 1
-            self.set_current_winnings(0.0)
+            # self.calculateWinnings()
             # TODO mozda ce biti bag, ako ima free betove, mora da se uzima previously, odnosno da mu se onesposobi da menja
             return True 
-        if self.player_money >= 0.0:
+        elif self.player_money >= 0.0:
             self.set_current_winnings(0.0)
             self.player_money -= money
             self.bank_money += money
