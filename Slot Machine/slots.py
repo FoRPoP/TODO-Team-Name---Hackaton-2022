@@ -9,11 +9,6 @@ from matplotlib.pyplot import yscale
 import pygame, os, random, sys, noise
 from PIL import Image
 import itertools
-import numpy as np
-import copy
-import math
-
-from sqlalchemy import column
 
 import button
 
@@ -185,13 +180,15 @@ class Game():
 
         self.display_rect = pygame.Rect(345, 270, 1330, 550)
 
-        self.index = 0
-        self.velocity = 0
-        self.rebound_velocity = 0
+        self.index = [0, 0, 0, 0, 0]
+        self.velocity = [0, 0, 0, 0, 0]
+        self.rebound_velocity = [0, 0, 0, 0, 0]
         self.spin = False
         self.spinning = False
         self.payout = False
-        self.frame_counter = 0
+        self.frame_counter = [0, 0, 0, 0, 0]
+        self.frame_counter_counter = 0
+        self.velocities_0_counter = 0
 
         self.casino = Payout(self)
         self.spincounter=0
@@ -222,7 +219,6 @@ class Game():
             if i == 4:
                 for position in column4:
                     self.display.blit(surface, position)
-                
 
     def game_loop(self):
 
@@ -242,9 +238,11 @@ class Game():
 
             if self.spin == True and self.spinning == False:
                 velocities = [100, 110, 120, 130, 140, 150]
-                self.velocity = random.choice(velocities)
-                self.velocity = 30
+                for i in range(5):
+                    self.velocity[i] = random.choice(velocities)
                 self.spinning = True
+                self.frame_counter_counter = 0
+                self.velocities_0_counter = 0
 
             collisions = []
 
@@ -254,45 +252,66 @@ class Game():
                         collisions.append(tile)
                         tile.draw()
 
-            if self.velocity > 0:
-                for reel in self.reels:
-                    for tile in reel:
-                        tile.move(self.velocity)
-                self.velocity -= 1
+            for (i, velocity) in enumerate(self.velocity):
+                if velocity > 0:
+                    for tile in self.reels[i]:
+                        tile.move(velocity)
+                self.velocity[i] -= 1
 
-            if self.velocity == 0:
-                if self.spin:
-                    _, list_tile_y = collisions[0].get_position()
-                    y_difference = 675 - list_tile_y
-                    if y_difference != 0:
-                        self.rebound_velocity = y_difference
-                    self.spin = False
+                if velocity == 0:
+                    self.velocities_0_counter += 1
+                    if self.spin:
+                        list_tiles_y = []
+                        last_list_tile_x = None
+                        for j in range(len(collisions)):
+                            list_tile_x, list_tile_y = collisions[j].get_position()
+                            if list_tile_x != last_list_tile_x:
+                                last_list_tile_x = list_tile_x
+                                list_tiles_y.append(list_tile_y)
+                        y_differences = []
+                        for k in range(len(list_tiles_y)):
+                            y_differences.append(675 - list_tiles_y[k])
+                        if y_differences[i] != 0:
+                            self.rebound_velocity[i] = y_differences[i]
+                        if self.velocities_0_counter == 5:
+                            self.spin = False
 
-            if self.rebound_velocity != 0:
-                if self.frame_counter < 10:
-                    for reel in self.reels:
+            for (i, rebound_velocity) in enumerate(self.rebound_velocity):
+                if rebound_velocity != 0:
+                    if self.frame_counter[i] < 10:
+                        reel = self.reels[i]
                         for tile in reel:
-                            move_amount = self.rebound_velocity
+                            move_amount = rebound_velocity
                             tile.move(move_amount / 10)
-                    self.frame_counter += 1
-                else:
-                    self.rebound_velocity = 0
-                    self.frame_counter = 0
-                    self.spinning = False
-                    self.payout = True
+                        self.frame_counter[i] += 1
+                    else:
+                        self.frame_counter_counter += 1
+                        self.rebound_velocity[i] = 0
+                        self.frame_counter[i] = 0
+                        if self.frame_counter_counter == 5:
+                            self.spinning = False
+                            self.payout = True
 
             if self.payout == True:
-                _, y_pos_last = collisions[0].get_position()
-                tiles_passed = 0
-                for tile in self.reels[0]:
-                    _, y_pos = tile.get_position()
-                    if y_pos_last < y_pos:
-                        tiles_passed += 1
+                y_pos_lasts = []
+                last_x_pos = []
+                for i in range(len(collisions)):
+                    x_pos_last, y_pos_last = collisions[i].get_position()
+                    if x_pos_last != last_x_pos:
+                        last_x_pos = x_pos_last
+                        y_pos_lasts.append(y_pos_last)
+                tiles_passed = [0, 0, 0, 0, 0]
+                for (i, reel) in enumerate(self.reels):
+                    for tile in reel:
+                        _, y_pos = tile.get_position()
+                        if y_pos_lasts[i] < y_pos:
+                            tiles_passed[i] += 1
 
-                self.index += tiles_passed
-                self.index = self.index % 30
+                    self.index[i] += tiles_passed[i]
+                    self.index[i] = self.index[i] % 30
+
                 for i in range(len(self.reels)):
-                    new_reel = self.default_reels[i][self.index:]
+                    new_reel = self.default_reels[i][self.index[i]:]
                     for j in range(len(new_reel)):
                         new_reel[j].set_position(675 - j * 200)
                         self.reels[i] = new_reel
@@ -327,8 +346,6 @@ class Game():
                             pass
                             # pygame.mixer.music.play()
                     if event.key == K_SPACE:
-                        for i in range(10):
-                            self.win_lines[i] = False
                         self.spin = self.casino.payToMachine(self.casino.money_invested)
                 if event.type == MOUSEBUTTONDOWN:
                     mx, my = pygame.mouse.get_pos()
@@ -454,9 +471,9 @@ class Game():
             self.display.blit(self.totalbet_img,(450,900))
             self.draw_text(str(self.casino.money_invested), 45, 580, 970)
             self.display.blit(self.won_img,(1210,900))
-            self.draw_text(str(round(self.casino.get_current_winnings(), 2)), 45, 1300, 970)
+            self.draw_text(str(self.casino.get_current_winnings()), 45, 1300, 970)
             self.display.blit(self.credits1_img,(1445,900))
-            self.draw_text(str(round(self.casino.player_money, 2)), 45, 1550, 970)
+            self.draw_text(str(self.casino.player_money), 45, 1550, 970)
             self.display.blit(self.spins_img, (200,900))
             self.draw_text(str(self.casino.free_bets), 45, 320,970)
 
@@ -529,7 +546,7 @@ class Tile():
 
 class Payout(object):
 
-    def __init__(self,game:Game):
+    def __init__(self,game):
         self.fruits = None
         self.array = None
         # TODO moze i u konstruktoru
@@ -578,7 +595,8 @@ class Payout(object):
             return "pyramid"
 
     def fix_columns(self, symbol, list):
-        self.game.show_special_element(symbol, list)
+        # TODO u listi se nalaze indeksi tabela u kojima se nalazi symbol
+        pass
 
 
     def calculate_best_from_begginging(self, row):
@@ -718,15 +736,12 @@ class Payout(object):
             if pyramide_counter >= 3:
                 self.active_special = True
                 self.free_bets = 10
-                # TODO ukloniti
-                #self.special_symbol = self.get_random_element(random.randint(0, 10))
-                self.special_symbol = 'jungle'
+                self.special_symbol = self.get_random_element(random.randint(0, 10))
                 print(self.special_symbol + " broj: " + str(pyramide_counter))
 
             winnings = 0.0
             for i,row in enumerate(self.fruits):
                 win = self.calculate_best_from_begginging(row)
-                print(f'linije sa brojem {i+1} je {row}')
                 if win:
                     self.game.win_lines[i] = True
                 winnings += win
@@ -734,7 +749,6 @@ class Payout(object):
             # no 4
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[8], self.array[4]]
             win = self.calculate_best_from_begginging(pom_list)
-            print(f'linije sa brojem 4 je {pom_list}')
             if win:
                 self.game.win_lines[3]=True
             winnings += win
@@ -742,7 +756,6 @@ class Payout(object):
             # no 5
             pom_list = [self.array[10], self.array[6], self.array[2], self.array[8], self.array[14]]
             win = self.calculate_best_from_begginging(pom_list)
-            print(f'linije sa brojem 5 je {pom_list}')
             if win:
                 self.game.win_lines[4]=True
 
@@ -751,7 +764,6 @@ class Payout(object):
             # no 6
             pom_list = [self.array[0], self.array[6], self.array[2], self.array[8], self.array[4]]
             win = self.calculate_best_from_begginging(pom_list)
-            print(f'linije sa brojem 6 je {pom_list}')
             if win:
                 self.game.win_lines[5]=True
             winnings += win
@@ -759,7 +771,6 @@ class Payout(object):
             # no 7
             pom_list = [self.array[5], self.array[11], self.array[7], self.array[13], self.array[9]]
             win = self.calculate_best_from_begginging(pom_list)
-            print(f'linije sa brojem 7 je {pom_list}')
             if win:
                 self.game.win_lines[6]=True
             winnings += win
@@ -767,7 +778,6 @@ class Payout(object):
             # no 8
             pom_list = [self.array[5], self.array[1], self.array[7], self.array[3], self.array[9]]
             win = self.calculate_best_from_begginging(pom_list)
-            print(f'linije sa brojem 8 je {pom_list}')
             if win:
                 self.game.win_lines[7]=True
             winnings += win
@@ -775,7 +785,6 @@ class Payout(object):
 
             # no 9
             pom_list = [self.array[10], self.array[6], self.array[12], self.array[8], self.array[14]]
-            print(f'linije sa brojem 9 je {pom_list}')
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[8]=True
@@ -784,7 +793,6 @@ class Payout(object):
 
             # no 10
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[13], self.array[14]]
-            print(f'linije sa brojem 10 je {pom_list}')
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[9]=True
@@ -800,7 +808,7 @@ class Payout(object):
             winnings = 0.0
 
             fixed_columns_special, special_counter = self.check_special_symbol(self.special_symbol)
-            fixed_columns_pyramide, pyramide_counter = self.check_special_symbol("pyramid")
+            fixed_columns_pyramide, pyramide_counter = self.check_special_symbol('pyramid')
 
             if pyramide_counter >= 3:
                 self.free_bets += 10
