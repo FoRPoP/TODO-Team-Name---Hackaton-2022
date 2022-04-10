@@ -49,9 +49,6 @@ class Game():
         self.credits1_img = pygame.image.load('data/images/credits1.png')
         self.spins_img = pygame.image.load('data/images/spins.png')
 
-
-
-
         self.spin_img = pygame.image.load('./data/images/spinbutton.png')
         self.autostart_img = pygame.image.load('./data/images/autostart.png')
         self.lines_img = pygame.image.load('./data/images/lines.png')
@@ -190,7 +187,7 @@ class Game():
         self.frame_counter = 0
 
         self.casino = Payout()
-        self.spincounter=0
+        self.spincounter = 0
 
     def game_loop(self):
 
@@ -204,16 +201,13 @@ class Game():
             self.display.blit(self.background_img, (0, 0))
             self.display.blit(self.table_img, (0, 0))
 
+            if self.spin == False and self.spinning == False and self.casino.free_bets > 0:
+                self.spin = self.casino.payToMachine(self.casino.money_invested)
+
             if self.spin == True and self.spinning == False:
                 velocities = [100, 110, 120, 130, 140, 150]
                 self.velocity = random.choice(velocities)
                 self.spinning = True
-
-            if self.spin == False and self.spinning == False and self.spincounter>0:
-                if self.casino.payToMachine(self.casino.money_invested):
-                    self.spincounter -= 1
-                    self.casino.free_bets -= 1
-                    self.spin = True
 
             collisions = []
 
@@ -460,8 +454,8 @@ class Payout(object):
         self.bank_money = self.start_bank_money
 
         self.special_symbol = None
-        self.free_bets = 0
-        self.active_special = False
+        self.free_bets = 10
+        self.active_special = True
 
         self.money_invested = 1
     
@@ -495,7 +489,6 @@ class Payout(object):
             return "pyramid"
 
     def fix_columns(self, symbol, list):
-        # TODO u listi se nalaze indeksi tabela u kojima se nalazi symbol
         pass
 
     def calculate_best_from_begginging(self, row):
@@ -681,7 +674,7 @@ class Payout(object):
             self.payToPlayer(winnings)
     
         elif self.active_special == True:
-            self.free_bets -=  1
+            #self.free_bets -=  1
             # provera reel-ova, obraditi self.fruits i self.array
     
             # horizontalni #no 1, 2, 3
