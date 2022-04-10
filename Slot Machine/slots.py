@@ -73,8 +73,8 @@ class Game():
         self.banana_img = pygame.transform.scale(self.banana_img, (191, 153))
         self.apple_img = pygame.image.load('data/images/apple.png')
         self.apple_img = pygame.transform.scale(self.apple_img, (191, 153))
-        self.jungle1_img = pygame.image.load('data/images/jungle1.png')
-        self.jungle1_img = pygame.transform.scale(self.jungle1_img, (191, 153))
+        self.jungle_img = pygame.image.load('data/images/jungle.png')
+        self.jungle_img = pygame.transform.scale(self.jungle_img, (191, 153))
         self.pyramid_img = pygame.image.load('data/images/pyramid.png')
         self.pyramid_img = pygame.transform.scale(self.pyramid_img, (191, 153))
         self.monkey_img = pygame.image.load('data/images/monkey.png')
@@ -361,6 +361,8 @@ class Game():
 
                 self.payout = False
 
+            self.casino.set_reels(self.reels)
+
             self.display.blit(self.table_borders_surface, (0, 0))
 
             for event in pygame.event.get():
@@ -581,6 +583,13 @@ class Tile():
     def get_type(self):
         return self.tile_type
 
+    def set_img(self, img_name):
+        path = 'data/images/' + img_name + '.png'
+        img = pygame.image.load(path)
+        img = pygame.transform.scale(img, (191, 153))
+        img.set_colorkey((255, 255, 255))
+        self.img = img
+
 class Payout(object):
 
     def __init__(self,game:Game):
@@ -601,7 +610,12 @@ class Payout(object):
         self.active_special = False
 
         self.money_invested = 1
-    
+
+        self.creels = []
+
+    def set_reels(self, reels):
+        self.reels = reels
+
     def set_current_winnings(self, value):
         self.current_winnings = value
     def get_current_winnings(self):
@@ -632,8 +646,16 @@ class Payout(object):
             return "pyramid"
 
     def fix_columns(self, symbol, list):
-        # TODO u listi se nalaze indeksi tabela u kojima se nalazi symbol
-        pass
+
+        list = [1, 2, 3]
+        for num in list:
+            print(num)
+        for (i, reel) in enumerate(self.reels):
+            if i in list:
+                reel[0].set_img(symbol)
+                reel[1].set_img(symbol)
+                reel[2].set_img(symbol)
+                print('here')
 
     def calculate_best_from_begginging(self, row):
         current_el = row[0]
@@ -800,6 +822,7 @@ class Payout(object):
             # no 6
             pom_list = [self.array[0], self.array[6], self.array[2], self.array[8], self.array[4]]
             win = self.calculate_best_from_begginging(pom_list)
+            print(f'linije sa brojem 6 je {pom_list}')
             if win:
                 self.game.win_lines[5]=True
             winnings += win
@@ -807,6 +830,7 @@ class Payout(object):
             # no 7
             pom_list = [self.array[5], self.array[11], self.array[7], self.array[13], self.array[9]]
             win = self.calculate_best_from_begginging(pom_list)
+            print(f'linije sa brojem 7 je {pom_list}')
             if win:
                 self.game.win_lines[6]=True
             winnings += win
@@ -814,6 +838,7 @@ class Payout(object):
             # no 8
             pom_list = [self.array[5], self.array[1], self.array[7], self.array[3], self.array[9]]
             win = self.calculate_best_from_begginging(pom_list)
+            print(f'linije sa brojem 8 je {pom_list}')
             if win:
                 self.game.win_lines[7]=True
             winnings += win
@@ -821,6 +846,7 @@ class Payout(object):
 
             # no 9
             pom_list = [self.array[10], self.array[6], self.array[12], self.array[8], self.array[14]]
+            print(f'linije sa brojem 9 je {pom_list}')
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[8]=True
@@ -829,6 +855,7 @@ class Payout(object):
 
             # no 10
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[13], self.array[14]]
+            print(f'linije sa brojem 10 je {pom_list}')
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[9]=True
@@ -837,23 +864,25 @@ class Payout(object):
             self.payToPlayer(winnings)
     
         elif self.active_special == True:
+            #self.free_bets -=  1
             # provera reel-ova, obraditi self.fruits i self.array
     
             # horizontalni #no 1, 2, 3
             winnings = 0.0
 
             fixed_columns_special, special_counter = self.check_special_symbol(self.special_symbol)
-            fixed_columns_pyramide, pyramide_counter = self.check_special_symbol('pyramid')
+            fixed_columns_pyramide, pyramide_counter = self.check_special_symbol("pyramid")
 
             if pyramide_counter >= 3:
                 self.free_bets += 10
 
             print(f"specijalnih karaktera ima: {special_counter} a karakter je {special_counter}")
             if special_counter >= 3:
-                #self.fix_columns(self.special_symbol,fixed_columns_special)
+                self.fix_columns(self.special_symbol, fixed_columns_pyramide)
                 special_winning = 10 * self.evaluate(self.special_symbol, special_counter)
                 self.game.show_special_element(self.special_symbol, fixed_columns_special)
                 winnings += special_winning
+
 
             for i, row in enumerate(self.fruits):
                 win = self.calculate_best_from_begginging(row)
