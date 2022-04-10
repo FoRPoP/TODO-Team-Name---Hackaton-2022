@@ -55,7 +55,7 @@ class Game():
         self.lines_img = pygame.image.load('./data/images/lines.png')
         self.betmax_img = pygame.image.load('./data/images/betmax.png')
         self.soundon_img = pygame.image.load('./data/images/sound.png')
-        self.soundoff_img = pygame.image.load('./data/images/sound-off.png')
+        self.soundoff_img = pygame.image.load('./data/images/mute.png')
         self.return_img = pygame.image.load('./data/images/return.png')
         self.title_img = pygame.image.load('./data/images/title.png')
         self.sound=True
@@ -320,8 +320,10 @@ class Game():
                         else:
                             pass
                             # pygame.mixer.music.play()
-                    if event.key == K_SPACE:
+                    if event.key == K_SPACE and self.spin==False:
                         self.spin = self.casino.payToMachine(self.casino.money_invested)
+                        for i in range(10):
+                            self.win_lines[i] = False
                 if event.type == MOUSEBUTTONDOWN:
                     mx, my = pygame.mouse.get_pos()
                     print(f'mouse  je ({mx},{my})')

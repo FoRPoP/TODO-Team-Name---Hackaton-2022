@@ -77,7 +77,9 @@ class CreditsMenu(Menu):
 
 
             self.game.draw_text('Credits', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
-            self.game.draw_text('Made by me', 15, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 10)
+            self.game.draw_text('sound icons= https://www.flaticon.com/free-icons/sound', 15, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 10)
+            self.game.draw_text('https://www.flaticon.com/free-icons/mute', 15, self.game.DISPLAY_W / 2,
+                                self.game.DISPLAY_H / 2 + 30)
 
 
             self.blit_screen()
