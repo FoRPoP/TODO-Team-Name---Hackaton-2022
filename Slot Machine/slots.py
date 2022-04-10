@@ -36,6 +36,7 @@ class Game():
 
         self.credits = CreditsMenu(self)
         self.curr_menu = self.main_menu
+        self.win_lines = [False for i in range(10)]
 
         self.background_img = pygame.image.load('data/images/background.png')
         self.table_img = pygame.image.load('data/images/table.png')
@@ -179,7 +180,7 @@ class Game():
             for k in range(len(self.default_reels[0])):
                 self.reels[i].append(self.default_reels[i][k])
 
-        self.display_rect = pygame.Rect(345, 270, 1330, 600)
+        self.display_rect = pygame.Rect(345, 270, 1330, 550)
 
         self.index = 0
         self.velocity = 0
@@ -189,7 +190,7 @@ class Game():
         self.payout = False
         self.frame_counter = 0
 
-        self.casino = Payout()
+        self.casino = Payout(self)
         self.spincounter=0
 
     def game_loop(self):
@@ -447,7 +448,7 @@ class Tile():
 
 class Payout(object):
 
-    def __init__(self):
+    def __init__(self,game):
         self.fruits = None
         self.array = None
         # TODO moze i u konstruktoru
@@ -456,6 +457,7 @@ class Payout(object):
         self.current_winnings = 0.0
         self.spins=10
         self.betmax=5
+        self.game=game
 
         self.bank_money = self.start_bank_money
 
@@ -646,39 +648,69 @@ class Payout(object):
             # no 4
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[8], self.array[4]]
             win = self.calculate_best_from_begginging(pom_list)
+            if win:
+                self.game.win_lines[4]=True
             winnings += win
             
             # no 5
             pom_list = [self.array[10], self.array[6], self.array[2], self.array[8], self.array[14]]
             win = self.calculate_best_from_begginging(pom_list)
+            if win:
+                self.game.win_lines[5]=True
+
             winnings += win
 
             # no 6
             pom_list = [self.array[0], self.array[6], self.array[2], self.array[8], self.array[4]]
             win = self.calculate_best_from_begginging(pom_list)
+            if win:
+                self.game.win_lines[6]=True
             winnings += win
     
             # no 7
             pom_list = [self.array[5], self.array[11], self.array[7], self.array[13], self.array[9]]
             win = self.calculate_best_from_begginging(pom_list)
+            if win:
+                self.game.win_lines[7]=True
             winnings += win
     
             # no 8
             pom_list = [self.array[5], self.array[1], self.array[7], self.array[3], self.array[9]]
             win = self.calculate_best_from_begginging(pom_list)
+            if win:
+                self.game.win_lines[8]=True
             winnings += win
+
     
             # no 9
             pom_list = [self.array[10], self.array[6], self.array[12], self.array[8], self.array[14]]
             win = self.calculate_best_from_begginging(pom_list)
+            if win:
+                self.game.win_lines[9]=True
             winnings += win
+
     
             # no 10
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[13], self.array[14]]
             win = self.calculate_best_from_begginging(pom_list)
+            if win:
+                self.game.win_lines[10]=True
             winnings += win
     
             self.payToPlayer(winnings)
+
+
+
+
+
+
+
+
+
+
+
+
+
     
         elif self.active_special == True:
             self.free_bets -=  1
@@ -704,31 +736,52 @@ class Payout(object):
     
             # no 4
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[8], self.array[4]]
-            winnings += self.calculate_best_from_begginging(pom_list)
-            
+            win = self.calculate_best_from_begginging(pom_list)
+            if win:
+                self.game.win_lines[4] = True
+            winnings += win
+
             # no 5
             pom_list = [self.array[10], self.array[6], self.array[2], self.array[8], self.array[14]]
-            winnings += self.calculate_best_from_begginging(pom_list)
+            win = self.calculate_best_from_begginging(pom_list)
+            if win:
+                self.game.win_lines[5] = True
+            winnings += win
     
             # no 6
             pom_list = [self.array[0], self.array[6], self.array[2], self.array[8], self.array[4]]
-            winnings += self.calculate_best_from_begginging(pom_list)
+            win = self.calculate_best_from_begginging(pom_list)
+            if win:
+                self.game.win_lines[6] = True
+            winnings += win
     
             # no 7
             pom_list = [self.array[5], self.array[11], self.array[7], self.array[13], self.array[9]]
-            winnings += self.calculate_best_from_begginging(pom_list)
+            win = self.calculate_best_from_begginging(pom_list)
+            if win:
+                self.game.win_lines[7] = True
+            winnings += win
     
             # no 8
             pom_list = [self.array[5], self.array[1], self.array[7], self.array[3], self.array[9]]
-            winnings += self.calculate_best_from_begginging(pom_list)
+            win = self.calculate_best_from_begginging(pom_list)
+            if win:
+                self.game.win_lines[8] = True
+            winnings += win
     
             # no 9
             pom_list = [self.array[10], self.array[6], self.array[12], self.array[8], self.array[14]]
-            winnings += self.calculate_best_from_begginging(pom_list)
+            win = self.calculate_best_from_begginging(pom_list)
+            if win:
+                self.game.win_lines[9] = True
+            winnings += win
     
             # no 10
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[13], self.array[14]]
-            winnings += self.calculate_best_from_begginging(pom_list)
+            win = self.calculate_best_from_begginging(pom_list)
+            if win:
+                self.game.win_lines[10] = True
+            winnings += win
     
             self.payToPlayer(winnings)
 
