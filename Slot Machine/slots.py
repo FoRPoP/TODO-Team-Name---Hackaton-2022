@@ -11,6 +11,7 @@ from PIL import Image
 import itertools
 import numpy as np
 import copy
+import math
 
 import button
 
@@ -59,6 +60,7 @@ class Game():
         self.soundon_img = pygame.image.load('./data/images/sound.png')
         self.soundoff_img = pygame.image.load('./data/images/sound-off.png')
         self.return_img = pygame.image.load('./data/images/return.png')
+        self.title_img = pygame.image.load('./data/images/title.png')
         self.sound=True
         self.lines=False
 
@@ -203,6 +205,7 @@ class Game():
 
             self.display.blit(self.background_img, (0, 0))
             self.display.blit(self.table_img, (0, 0))
+            self.display.blit(self.title_img, (0, 0))
 
             if self.spin == False and self.spinning == False and self.casino.free_bets > 0:
                 self.spin = self.casino.payToMachine(self.casino.money_invested)
@@ -210,7 +213,7 @@ class Game():
             if self.spin == True and self.spinning == False:
                 velocities = [100, 110, 120, 130, 140, 150]
                 self.velocity = random.choice(velocities)
-                self.velocity = 40
+                self.velocity = 30
                 self.spinning = True
 
             collisions = []
@@ -263,14 +266,18 @@ class Game():
                     for j in range(len(new_reel)):
                         new_reel[j].set_position(675 - j * 200)
                         self.reels[i] = new_reel
-
-
                 
                 row1 = [collisions[2].get_type() , collisions[5].get_type() , collisions[8].get_type() , collisions[11].get_type() , collisions[14].get_type()]
                 row2 = [collisions[1].get_type() , collisions[4].get_type() , collisions[7].get_type() , collisions[10].get_type() , collisions[13].get_type()]
                 row3 = [collisions[0].get_type() , collisions[3].get_type() , collisions[6].get_type() , collisions[9].get_type() , collisions[12].get_type()]
 
+                print('***************************')
                 collisions_matrix = [row1, row2, row3]
+                for row in collisions_matrix:
+                    for el in row:
+                        print(el, end = ' ')
+                    print()
+                print('***************************')
 
                 self.casino.setFruitsState(collisions_matrix)
                 self.casino.calculateWinnings()
@@ -295,6 +302,8 @@ class Game():
                             pass
                             # pygame.mixer.music.play()
                     if event.key == K_SPACE:
+                        for i in range(10):
+                            self.win_lines[i] = False
                         self.spin = self.casino.payToMachine(self.casino.money_invested)
                 if event.type == MOUSEBUTTONDOWN:
                     mx, my = pygame.mouse.get_pos()
@@ -362,18 +371,18 @@ class Game():
                     pygame.draw.line(self.display, (255, 0, 0), (453, 767), (1461, 767), 8)
 
                 elif i == 3 and self.win_lines[i]:
-                    pygame.draw.line(self.display, (0, 255, 0), (453, 767), (958, 367), 8)
-                    pygame.draw.line(self.display, (0, 255, 0), (958, 367), (1461, 767), 8)
+                    pygame.draw.line(self.display, (0, 0, 255), (453, 367), (958, 767), 8)
+                    pygame.draw.line(self.display, (0, 0, 255), (958, 767), (1461, 367), 8)
 
                 elif i == 4 and self.win_lines[i]:
                     pygame.draw.line(self.display, (0, 255, 0), (453, 767), (958, 367), 8)
                     pygame.draw.line(self.display, (0, 255, 0), (958, 367), (1461, 767), 8)
 
                 elif i == 5 and self.win_lines[i]:
-                    pygame.draw.line(self.display, (100, 0, 255), (456, 574), (704, 371), 8)
-                    pygame.draw.line(self.display, (100, 0, 255), (704, 371), (959, 573), 8)
-                    pygame.draw.line(self.display, (100, 0, 255), (959, 573), (1210, 370), 8)
-                    pygame.draw.line(self.display, (100, 0, 255), (1210, 370), (1461, 571), 8)
+                    pygame.draw.line(self.display, (255, 255, 50), (461, 361), (703, 555), 8)
+                    pygame.draw.line(self.display, (255, 255, 50), (703, 555), (960, 356), 8)
+                    pygame.draw.line(self.display, (255, 255, 50), (960, 356), (1208, 553), 8)
+                    pygame.draw.line(self.display, (255, 255, 50), (1208, 553), (1453, 361), 8)
 
                 elif i == 6 and self.win_lines[i]:
                     pygame.draw.line(self.display, (10, 100, 155), (457, 574), (705, 770), 8)
@@ -382,10 +391,10 @@ class Game():
                     pygame.draw.line(self.display, (10, 100, 155), (1220, 770), (1457, 573), 8)
 
                 elif i == 7 and self.win_lines[i]:
-                    pygame.draw.line(self.display, (255, 255, 50), (461, 361), (703, 555), 8)
-                    pygame.draw.line(self.display, (255, 255, 50), (703, 555), (960, 356), 8)
-                    pygame.draw.line(self.display, (255, 255, 50), (960, 356), (1208, 553), 8)
-                    pygame.draw.line(self.display, (255, 255, 50), (1208, 553), (1453, 361), 8)
+                    pygame.draw.line(self.display, (100, 0, 255), (456, 574), (704, 371), 8)
+                    pygame.draw.line(self.display, (100, 0, 255), (704, 371), (959, 573), 8)
+                    pygame.draw.line(self.display, (100, 0, 255), (959, 573), (1210, 370), 8)
+                    pygame.draw.line(self.display, (100, 0, 255), (1210, 370), (1461, 571), 8)
 
                 elif i == 8 and self.win_lines[i]:
                     pygame.draw.line(self.display, (204, 0, 102), (463, 770), (707, 582), 8)
@@ -421,11 +430,13 @@ class Game():
             self.display.blit(self.totalbet_img,(450,900))
             self.draw_text(str(self.casino.money_invested), 45, 580, 970)
             self.display.blit(self.won_img,(1210,900))
-            self.draw_text(str(self.casino.get_current_winnings()), 45, 1300, 970)
+            self.draw_text(str(round(self.casino.get_current_winnings(), 2)), 45, 1300, 970)
             self.display.blit(self.credits1_img,(1445,900))
-            self.draw_text(str(self.casino.player_money), 45, 1550, 970)
+            self.draw_text(str(round(self.casino.player_money, 2)), 45, 1550, 970)
             self.display.blit(self.spins_img, (200,900))
             self.draw_text(str(self.casino.free_bets), 45, 320,970)
+
+            self.display.blit(self.title_img, (0, 0))
 
 
 
@@ -538,14 +549,17 @@ class Payout(object):
         if number == 7:
             return "banana"
         if number == 8:
-            return "vine"
+            return "jungle"
         if number == 9:
             return "monkey"
         if number == 10:
             return "pyramid"
 
     def fix_columns(self, symbol, list):
-        # TODO u listi se nalaze indeksi tabela u kojima se nalazi symbol
+
+        #for l in list:
+           # for i in range(3):
+               # self.game..set(symbol)
         pass
 
     def calculate_best_from_begginging(self, row):
@@ -649,7 +663,7 @@ class Payout(object):
             if length == 5:
                 winnings = 20.0
 
-        if element == 'vine':
+        if element == 'jungle':
             if length == 3:
                 winnings = 3.0
             if length == 4:
@@ -691,68 +705,68 @@ class Payout(object):
             winnings = 0.0
             for i,row in enumerate(self.fruits):
                 win = self.calculate_best_from_begginging(row)
+                print(f'linije sa brojem {i+1} je {row}')
                 if win:
                     self.game.win_lines[i] = True
-                    print(f'linije sa brojem {i+1} je {row}')
                 winnings += win
     
             # no 4
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[8], self.array[4]]
             win = self.calculate_best_from_begginging(pom_list)
+            print(f'linije sa brojem 4 je {pom_list}')
             if win:
                 self.game.win_lines[3]=True
-                print(f'linije sa brojem 4 je {pom_list}')
             winnings += win
             
             # no 5
             pom_list = [self.array[10], self.array[6], self.array[2], self.array[8], self.array[14]]
             win = self.calculate_best_from_begginging(pom_list)
+            print(f'linije sa brojem 5 je {pom_list}')
             if win:
                 self.game.win_lines[4]=True
-                print(f'linije sa brojem 5 je {pom_list}')
 
             winnings += win
 
             # no 6
             pom_list = [self.array[0], self.array[6], self.array[2], self.array[8], self.array[4]]
             win = self.calculate_best_from_begginging(pom_list)
+            print(f'linije sa brojem 6 je {pom_list}')
             if win:
                 self.game.win_lines[5]=True
-                print(f'linije sa brojem 6 je {pom_list}')
             winnings += win
     
             # no 7
             pom_list = [self.array[5], self.array[11], self.array[7], self.array[13], self.array[9]]
             win = self.calculate_best_from_begginging(pom_list)
+            print(f'linije sa brojem 7 je {pom_list}')
             if win:
                 self.game.win_lines[6]=True
-                print(f'linije sa brojem 7 je {pom_list}')
             winnings += win
     
             # no 8
             pom_list = [self.array[5], self.array[1], self.array[7], self.array[3], self.array[9]]
             win = self.calculate_best_from_begginging(pom_list)
+            print(f'linije sa brojem 8 je {pom_list}')
             if win:
                 self.game.win_lines[7]=True
-                print(f'linije sa brojem 8 je {pom_list}')
             winnings += win
 
 
             # no 9
             pom_list = [self.array[10], self.array[6], self.array[12], self.array[8], self.array[14]]
+            print(f'linije sa brojem 9 je {pom_list}')
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[8]=True
-                print(f'linije sa brojem 9 je {pom_list}')
             winnings += win
 
 
             # no 10
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[13], self.array[14]]
+            print(f'linije sa brojem 10 je {pom_list}')
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[9]=True
-                print(f'linije sa brojem 10 je {pom_list}')
             winnings += win
     
             self.payToPlayer(winnings)
@@ -764,14 +778,14 @@ class Payout(object):
             # horizontalni #no 1, 2, 3
             winnings = 0.0
 
-            fixed_columns_special, special_counter = self.check_special_symbol("pyramid")
-            fixed_columns_pyramide, pyramide_counter = self.check_special_symbol(self.special_symbol)
+            fixed_columns_special, special_counter = self.check_special_symbol(self.special_symbol)
+            fixed_columns_pyramide, pyramide_counter = self.check_special_symbol("pyramid")
 
             if pyramide_counter >= 3:
                 self.free_bets += 10
 
             if special_counter >= 3:
-                self.fix_columns(self.special_symbol)
+                self.fix_columns(self.special_symbol,fixed_columns_special)
                 return 10 * self.evaluate(self.special_symbol, special_counter)
 
 
