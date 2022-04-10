@@ -13,6 +13,8 @@ import numpy as np
 import copy
 import math
 
+from sqlalchemy import column
+
 import button
 
 from pygame.locals import *
@@ -194,6 +196,34 @@ class Game():
         self.casino = Payout(self)
         self.spincounter=0
 
+    def show_special_element(self, symbol, indexes):
+        column0 = [(350, 675) ,  (350, 475) , (350, 275)]
+        column1 = [(604, 675) , (604, 475) , (604, 275)]
+        column2 = [(858, 675) , (858, 475) , (858, 275)]
+        column3 = [(1112, 675), (1112, 475), (1112, 275)]
+        column4 = [(1366, 675), (1366, 475), (1366, 275)]
+
+        path = f'data/images/{symbol}.png'
+        surface = pygame.image.load(path)
+
+        for i in indexes:
+            if i == 0:
+                for position in column0:
+                    self.display.blit(surface, position)
+            if i == 1:
+                for position in column1:
+                    self.display.blit(surface, position)
+            if i == 2:
+                for position in column2:
+                    self.display.blit(surface, position)
+            if i == 3:
+                for position in column3:
+                    self.display.blit(surface, position)
+            if i == 4:
+                for position in column4:
+                    self.display.blit(surface, position)
+                
+
     def game_loop(self):
 
         while self.playing:
@@ -266,6 +296,15 @@ class Game():
                     for j in range(len(new_reel)):
                         new_reel[j].set_position(675 - j * 200)
                         self.reels[i] = new_reel
+
+                print('*************************************')
+
+                for tile in collisions:
+                    print(tile.get_position())
+
+                print('*************************************')
+
+
                 
                 row1 = [collisions[2].get_type() , collisions[5].get_type() , collisions[8].get_type() , collisions[11].get_type() , collisions[14].get_type()]
                 row2 = [collisions[1].get_type() , collisions[4].get_type() , collisions[7].get_type() , collisions[10].get_type() , collisions[13].get_type()]
@@ -507,7 +546,7 @@ class Tile():
 
 class Payout(object):
 
-    def __init__(self,game):
+    def __init__(self,game:Game):
         self.fruits = None
         self.array = None
         # TODO moze i u konstruktoru
@@ -556,11 +595,7 @@ class Payout(object):
             return "pyramid"
 
     def fix_columns(self, symbol, list):
-
-        #for l in list:
-           # for i in range(3):
-               # self.game..set(symbol)
-        pass
+        self.game.show_special_element(symbol, list)
 
     def calculate_best_from_begginging(self, row):
         current_el = row[0]
@@ -699,7 +734,9 @@ class Payout(object):
             if pyramide_counter >= 3:
                 self.active_special = True
                 self.free_bets = 10
-                self.special_symbol = self.get_random_element(random.randint(0, 10))
+                # TODO ukloniti
+                #self.special_symbol = self.get_random_element(random.randint(0, 10))
+                self.special_symbol = 'banana'
                 print(self.special_symbol + " broj: " + str(pyramide_counter))
 
             winnings = 0.0
