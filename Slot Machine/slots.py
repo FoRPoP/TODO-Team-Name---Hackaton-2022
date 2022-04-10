@@ -151,7 +151,7 @@ class Game():
             if self.spin == False and self.spinning == False and self.spincounter>0:
                 if self.casino.payToMachine(self.casino.money_invested):
                     self.spincounter -= 1
-                    self.casino.spins -= 1
+                    self.casino.free_bets -= 1
                     self.spin = True
 
             collisions = []
@@ -241,14 +241,14 @@ class Game():
 
             self.display.blit(self.table_borders_surface, (0, 0))
 
-            if self.spin_button.draw(self.display):
+            if self.spin_button.draw(self.display) and self.spin==False:
                 self.spin = self.casino.payToMachine(self.casino.money_invested)
 
-            if self.autostart_button.draw(self.display):
-                if self.casino.spins>0:
-                    self.spincounter = self.casino.spins
+            if self.autostart_button.draw(self.display) and self.spin==False:
+                if self.casino.free_bets>0:
+                    self.spincounter = self.casino.free_bets
 
-            if self.lines_button.draw(self.display):
+            if self.lines_button.draw(self.display) and self.spin==False:
                 self.lines=~self.lines
 
             if self.lines:
@@ -288,7 +288,7 @@ class Game():
 
 
 
-            if self.betmax_button.draw(self.display):
+            if self.betmax_button.draw(self.display)and self.spin==False:
                 self.casino.money_invested=self.casino.betmax
 
             if self.return_button.draw(self.display):
@@ -305,19 +305,15 @@ class Game():
                     self.sound = True
                     pygame.mixer.music.play(-1)
 
-            self.display.blit(self.lines1_img,(200,900))
+
             self.display.blit(self.totalbet_img,(450,900))
             self.draw_text(str(self.casino.money_invested), 45, 580, 970)
             self.display.blit(self.won_img,(1210,900))
             self.draw_text(str(self.casino.get_current_winnings()), 45, 1300, 970)
             self.display.blit(self.credits1_img,(1445,900))
             self.draw_text(str(self.casino.player_money), 45, 1550, 970)
-            self.display.blit(self.spins_img, (1680, 905))
-            self.draw_text(str(self.casino.spins), 45, 1800, 970)
-
-
-
-
+            self.display.blit(self.spins_img, (200,900))
+            self.draw_text(str(self.casino.free_bets), 45, 320,970)
 
 
 
