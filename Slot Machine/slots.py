@@ -18,7 +18,6 @@ from menu import *
 
 import data.engine as e
 
-
 class Game():
     def __init__(self):
 
@@ -48,10 +47,6 @@ class Game():
         self.won_img = pygame.image.load('data/images/won.png')
         self.credits1_img = pygame.image.load('data/images/credits1.png')
         self.spins_img = pygame.image.load('data/images/spins.png')
-
-
-
-
         self.spin_img = pygame.image.load('./data/images/spinbutton.png')
         self.autostart_img = pygame.image.load('./data/images/autostart.png')
         self.lines_img = pygame.image.load('./data/images/lines.png')
@@ -105,20 +100,63 @@ class Game():
         pygame.mixer.music.load('data/music/BattleLoop2.ogg')
         pygame.mixer.music.play(-1)
 
-        self.default_reel1 = [Tile(350, 675 - i * 200, self.pineapple_img, 1, self.display, "pineapple") for i in range (50)]
-        self.default_reel2 = [Tile(604, 675 - i * 200, self.pineapple_img, 2, self.display, "pineapple") for i in range (50)]
-        self.default_reel3 = [Tile(858, 675 - i * 200, self.pineapple_img, 3, self.display, "pineapple") for i in range (50)]
-        self.default_reel4 = [Tile(1112, 675 - i * 200, self.pineapple_img, 4, self.display, "pineapple") for i in range (50)]
-        self.default_reel5 = [Tile(1366, 675 - i * 200, self.pineapple_img, 5, self.display, "pineapple") for i in range (50)]
-
-        self.reel1 = [Tile(350, 675 - i * 200, self.pi_img, 1, self.display, "pineapple") for i in range(50)]
-        self.reel2 = [Tile(604, 675 - i * 200, self.mi_img, 2, self.display, "pineapple") for i in range(50)]
-        self.reel3 = [Tile(858, 675 - i * 200, self.omega_img, 3, self.display, "pineapple") for i in range(50)]
-        self.reel4 = [Tile(1112, 675 - i * 200, self.alfa_img, 4, self.display, "pineapple") for i in range(50)]
-        self.reel5 = [Tile(1366, 675 - i * 200, self.beta_img, 5, self.display, "pineapple") for i in range(50)]
+        self.default_reel1 = []
+        self.default_reel2 = []
+        self.default_reel3 = []
+        self.default_reel4 = []
+        self.default_reel5 = []
 
         self.default_reels = [self.default_reel1, self.default_reel2, self.default_reel3, self.default_reel4, self.default_reel5]
+
+        self.reel1_numbers = [3, 4, 5, 8, 6, 3, 4, 8, 1, 2, 4, 4, 9, 5, 2, 7, 5, 3, 5, 1, 10, 1, 3, 6, 2, 10, 7, 9, 0, 10]
+        self.reel2_numbers = [10, 0, 3, 3, 2, 5, 9, 6, 6, 10, 5, 9, 4, 0, 2, 7, 1, 7, 2, 5, 1, 8, 4, 9, 8, 2, 10, 3, 4, 4]
+        self.reel3_numbers = [4, 8, 10, 5, 3, 4, 3, 5, 6, 3, 0, 10, 8, 5, 8, 9, 3, 4, 9, 5, 7, 1, 1, 7, 2, 2, 4, 1, 6, 2]
+        self.reel4_numbers = [3, 4, 9, 1, 5, 7, 2, 5, 0, 9, 2, 3, 4, 10, 0, 5, 4, 2, 1, 10, 8, 8, 7, 3, 6, 10, 2, 9, 5, 6]
+        self.reel5_numbers = [3, 4, 5, 8, 6, 3, 4, 8, 1, 2, 4, 4, 9, 5, 2, 7, 5, 3, 5, 1, 10, 1, 3, 6, 2, 10, 7, 9, 0, 10]
+
+        self.reel_numbers = [self.reel1_numbers, self.reel2_numbers, self.reel3_numbers, self.reel4_numbers, self.reel5_numbers]
+
+        for i in range(len(self.reel_numbers)):
+            reel_tmp = []
+            for j in range(4):
+                reel_tmp += self.reel_numbers[i]
+            self.reel_numbers[i] = reel_tmp
+
+        for i in range(len(self.reel_numbers)):
+            for j in range(len((self.reel_numbers[i]))):
+                if self.reel_numbers[i][j] == 0:
+                    self.default_reels[i].append(Tile(350 + i*254, 675 - j*200, self.pyramid_img, i, self.display, "pyramid"))
+                if self.reel_numbers[i][j] == 1:
+                    self.default_reels[i].append(Tile(350 + i*254, 675 - j*200, self.monkey_img, i, self.display, "monkey"))
+                if self.reel_numbers[i][j] == 2:
+                    self.default_reels[i].append(Tile(350 + i*254, 675 - j*200, self.jungle1_img, i, self.display, "jungle"))
+                if self.reel_numbers[i][j] == 3:
+                    self.default_reels[i].append(Tile(350 + i*254, 675 - j*200, self.banana_img, i, self.display, "banana"))
+                if self.reel_numbers[i][j] == 4:
+                    self.default_reels[i].append(Tile(350 + i*254, 675 - j*200, self.pi_img, i, self.display, "pi"))
+                if self.reel_numbers[i][j] == 5:
+                    self.default_reels[i].append(Tile(350 + i*254, 675 - j*200, self.omega_img, i, self.display, "omega"))
+                if self.reel_numbers[i][j] == 6:
+                    self.default_reels[i].append(Tile(350 + i*254, 675 - j*200, self.pineapple_img, i, self.display, "pineapple"))
+                if self.reel_numbers[i][j] == 7:
+                    self.default_reels[i].append(Tile(350 + i*254, 675 - j*200, self.apple_img, i, self.display, "apple"))
+                if self.reel_numbers[i][j] == 8:
+                    self.default_reels[i].append(Tile(350 + i*254, 675 - j*200, self.mi_img, i, self.display, "mi"))
+                if self.reel_numbers[i][j] == 9:
+                    self.default_reels[i].append(Tile(350 + i*254, 675 - j*200, self.beta_img, i, self.display, "beta"))
+                if self.reel_numbers[i][j] == 10:
+                    self.default_reels[i].append(Tile(350 + i*254, 675 - j*200, self.alfa_img, i, self.display, "alfa"))
+
+        self.reel1 = []
+        self.reel2 = []
+        self.reel3 = []
+        self.reel4 = []
+        self.reel5 = []
+
         self.reels = [self.reel1, self.reel2, self.reel3, self.reel4, self.reel5]
+        for i in range(len(self.reels)):
+                for k in range(len(self.default_reels[0])):
+                    self.reels[i].append(self.default_reels[i][k])
 
         self.display_rect = pygame.Rect(345, 270, 1330, 600)
 
@@ -128,6 +166,7 @@ class Game():
         self.spinning = False
         self.payout = False
         self.frame_counter = 0
+        self.index = 0
 
         self.casino = Payout()
         self.spincounter=0
@@ -145,13 +184,14 @@ class Game():
             self.display.blit(self.table_img, (0, 0))
 
             if self.spin == True and self.spinning == False:
-                self.velocity = 100
+                velocities = [100, 110, 120, 130, 140, 150]
+                self.velocity = random.choice(velocities)
                 self.spinning = True
 
             if self.spin == False and self.spinning == False and self.spincounter>0:
                 if self.casino.payToMachine(self.casino.money_invested):
                     self.spincounter -= 1
-                    self.casino.free_bets -= 1
+                    self.casino.spins -= 1
                     self.spin = True
 
             collisions = []
@@ -177,11 +217,11 @@ class Game():
                     self.spin = False
 
             if self.rebound_velocity != 0:
-                if self.frame_counter < 10:
+                if self.frame_counter < 5:
                     for reel in self.reels:
                         for tile in reel:
                             move_amount = self.rebound_velocity
-                            tile.move(move_amount / 10)
+                            tile.move(move_amount / 5)
                     self.frame_counter += 1
                 else:
                     self.rebound_velocity = 0
@@ -197,8 +237,11 @@ class Game():
                     if y_pos_last < y_pos:
                         tiles_passed += 1
                 
+                self.index += tiles_passed
+                self.index = self.index % 30
+
                 for i in range(len(self.reels)):
-                    new_reel = self.default_reels[i][4:]
+                    new_reel = self.default_reels[i][self.index:]
                     for j in range(len(new_reel)):
                         new_reel[j].set_position(675 - j * 200)
                         self.reels[i] = new_reel
@@ -241,14 +284,14 @@ class Game():
 
             self.display.blit(self.table_borders_surface, (0, 0))
 
-            if self.spin_button.draw(self.display) and self.spin==False:
+            if self.spin_button.draw(self.display):
                 self.spin = self.casino.payToMachine(self.casino.money_invested)
 
-            if self.autostart_button.draw(self.display) and self.spin==False:
-                if self.casino.free_bets>0:
-                    self.spincounter = self.casino.free_bets
+            if self.autostart_button.draw(self.display):
+                if self.casino.spins>0:
+                    self.spincounter = self.casino.spins
 
-            if self.lines_button.draw(self.display) and self.spin==False:
+            if self.lines_button.draw(self.display):
                 self.lines=~self.lines
 
             if self.lines:
@@ -286,9 +329,7 @@ class Game():
                 pygame.draw.line(self.display, (255, 128, 0), (978, 770), (1455, 775), 8)
 
 
-
-
-            if self.betmax_button.draw(self.display)and self.spin==False:
+            if self.betmax_button.draw(self.display):
                 self.casino.money_invested=self.casino.betmax
 
             if self.return_button.draw(self.display):
@@ -305,16 +346,14 @@ class Game():
                     self.sound = True
                     pygame.mixer.music.play(-1)
 
-
+            self.display.blit(self.lines1_img,(200,900))
             self.display.blit(self.totalbet_img,(450,900))
             self.draw_text(str(self.casino.money_invested), 45, 580, 970)
             self.display.blit(self.won_img,(1210,900))
-            self.draw_text(str(self.casino.get_current_winnings()), 45, 1300, 970)
             self.display.blit(self.credits1_img,(1445,900))
             self.draw_text(str(self.casino.player_money), 45, 1550, 970)
-            self.display.blit(self.spins_img, (200,900))
-            self.draw_text(str(self.casino.free_bets), 45, 320,970)
-
+            self.display.blit(self.spins_img, (1680, 905))
+            self.draw_text(str(self.casino.spins), 45, 1800, 970)
 
 
             self.window.blit(pygame.transform.scale(self.display, (self.DISPLAY_W, self.DISPLAY_H)), (0, 0))
@@ -390,7 +429,6 @@ class Payout(object):
         # TODO moze i u konstruktoru
         self.player_money = 100.0
         self.start_bank_money = 10000.0
-        self.current_winnings = 0.0
         self.spins=10
         self.betmax=5
 
@@ -402,11 +440,6 @@ class Payout(object):
 
         self.money_invested = 1
     
-    def set_current_winnings(self, value):
-        self.current_winnings = value
-    def get_current_winnings(self):
-        return self.current_winnings
-
     def get_random_element(self, number):
         if number == 0:
             return "alfa"
@@ -676,11 +709,9 @@ class Payout(object):
     def payToMachine(self, money) -> Boolean:
         if self.free_bets > 0:
             self.free_bets -= 1
-            self.set_current_winnings(0.0)
             # TODO mozda ce biti bag, ako ima free betove, mora da se uzima previously, odnosno da mu se onesposobi da menja
             return True 
         if self.player_money >= 0.0:
-            self.set_current_winnings(0.0)
             self.player_money -= money
             self.bank_money += money
             self.money_invested = money
@@ -690,7 +721,6 @@ class Payout(object):
 
     def payToPlayer(self, money):
         self.player_money += money
-        self.set_current_winnings(money)
     
     def calculateRTP(self):
         pass
