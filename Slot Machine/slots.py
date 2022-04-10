@@ -55,7 +55,7 @@ class Game():
         self.lines_img = pygame.image.load('./data/images/lines.png')
         self.betmax_img = pygame.image.load('./data/images/betmax.png')
         self.soundon_img = pygame.image.load('./data/images/sound.png')
-        self.soundoff_img = pygame.image.load('./data/images/mute.png')
+        self.soundoff_img = pygame.image.load('./data/images/sound-off.png')
         self.return_img = pygame.image.load('./data/images/return.png')
         self.title_img = pygame.image.load('./data/images/title.png')
         self.sound=True
@@ -133,6 +133,39 @@ class Game():
                 reel_tmp += self.reel_numbers[i]
             self.reel_numbers[i] = reel_tmp
 
+        # for i in range(len(self.reel_numbers)):
+            # for j in range(len((self.reel_numbers[i]))):
+                # if self.reel_numbers[i][j] == 0:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                # if self.reel_numbers[i][j] == 1:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                # if self.reel_numbers[i][j] == 2:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
+                # if self.reel_numbers[i][j] == 3:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                # if self.reel_numbers[i][j] == 4:
+                    # self.default_reels[i].append(Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                # if self.reel_numbers[i][j] == 5:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
+                # if self.reel_numbers[i][j] == 6:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
+                # if self.reel_numbers[i][j] == 7:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
+                # if self.reel_numbers[i][j] == 8:
+                    # self.default_reels[i].append(Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
+                # if self.reel_numbers[i][j] == 9:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.jungle1_img, i, self.display, "jungle"))
+                # if self.reel_numbers[i][j] == 10:
+                    # self.default_reels[i].append(
+                        # Tile(350 + i * 254, 675 - j * 200, self.pyramid_img, i, self.display, "pyramid"))
         for i in range(len(self.reel_numbers)):
             for j in range(len((self.reel_numbers[i]))):
                 if self.reel_numbers[i][j] == 0:
@@ -191,7 +224,34 @@ class Game():
         self.velocities_0_counter = 0
 
         self.casino = Payout(self)
-        self.spincounter = 0
+        self.spincounter=0
+
+    def show_special_element(self, symbol, indexes):
+        column0 = [(350, 675) ,  (350, 475) , (350, 275)]
+        column1 = [(604, 675) , (604, 475) , (604, 275)]
+        column2 = [(858, 675) , (858, 475) , (858, 275)]
+        column3 = [(1112, 675), (1112, 475), (1112, 275)]
+        column4 = [(1366, 675), (1366, 475), (1366, 275)]
+
+        path = f'./data/images/{symbol}.png'
+        surface = pygame.image.load(path)
+
+        for i in indexes:
+            if i == 0:
+                for position in column0:
+                    self.display.blit(surface, position)
+            if i == 1:
+                for position in column1:
+                    self.display.blit(surface, position)
+            if i == 2:
+                for position in column2:
+                    self.display.blit(surface, position)
+            if i == 3:
+                for position in column3:
+                    self.display.blit(surface, position)
+            if i == 4:
+                for position in column4:
+                    self.display.blit(surface, position)
 
     def game_loop(self):
 
@@ -523,7 +583,7 @@ class Tile():
 
 class Payout(object):
 
-    def __init__(self,game):
+    def __init__(self,game:Game):
         self.fruits = None
         self.array = None
         # TODO moze i u konstruktoru
@@ -754,7 +814,6 @@ class Payout(object):
             # no 8
             pom_list = [self.array[5], self.array[1], self.array[7], self.array[3], self.array[9]]
             win = self.calculate_best_from_begginging(pom_list)
-            print(f'linije sa brojem 8 je {pom_list}')
             if win:
                 self.game.win_lines[7]=True
             winnings += win
@@ -762,7 +821,6 @@ class Payout(object):
 
             # no 9
             pom_list = [self.array[10], self.array[6], self.array[12], self.array[8], self.array[14]]
-            print(f'linije sa brojem 9 je {pom_list}')
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[8]=True
@@ -771,7 +829,6 @@ class Payout(object):
 
             # no 10
             pom_list = [self.array[0], self.array[6], self.array[12], self.array[13], self.array[14]]
-            print(f'linije sa brojem 10 je {pom_list}')
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[9]=True
@@ -780,30 +837,23 @@ class Payout(object):
             self.payToPlayer(winnings)
     
         elif self.active_special == True:
-            #self.free_bets -=  1
             # provera reel-ova, obraditi self.fruits i self.array
     
             # horizontalni #no 1, 2, 3
             winnings = 0.0
 
-            fixed_columns_special, special_counter = self.check_special_symbol("pyramid")
-            fixed_columns_pyramide, pyramide_counter = self.check_special_symbol(self.special_symbol)
+            fixed_columns_special, special_counter = self.check_special_symbol(self.special_symbol)
+            fixed_columns_pyramide, pyramide_counter = self.check_special_symbol('pyramid')
 
             if pyramide_counter >= 3:
                 self.free_bets += 10
 
+            print(f"specijalnih karaktera ima: {special_counter} a karakter je {special_counter}")
             if special_counter >= 3:
-                self.fix_columns(self.special_symbol,fixed_columns_special)
-                winning = 10 * self.evaluate(self.special_symbol, special_counter)
-                print(f'Dobitak je: {winning}')
-                self.payToPlayer(winning)
-
-                if self.free_bets == 0:
-                    self.special_symbol = None
-                    self.active_special = False
-
-                return None
-
+                #self.fix_columns(self.special_symbol,fixed_columns_special)
+                special_winning = 10 * self.evaluate(self.special_symbol, special_counter)
+                self.game.show_special_element(self.special_symbol, fixed_columns_special)
+                winnings += special_winning
 
             for i, row in enumerate(self.fruits):
                 win = self.calculate_best_from_begginging(row)
