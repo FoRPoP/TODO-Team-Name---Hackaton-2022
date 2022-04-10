@@ -9,6 +9,8 @@ from matplotlib.pyplot import yscale
 import pygame, os, random, sys, noise
 from PIL import Image
 import itertools
+import numpy as np
+import copy
 
 import button
 
@@ -208,6 +210,7 @@ class Game():
             if self.spin == True and self.spinning == False:
                 velocities = [100, 110, 120, 130, 140, 150]
                 self.velocity = random.choice(velocities)
+                self.velocity = 40
                 self.spinning = True
 
             collisions = []
@@ -261,12 +264,13 @@ class Game():
                         new_reel[j].set_position(675 - j * 200)
                         self.reels[i] = new_reel
 
-                collisions_matrix = []
-                for i in range(3):
-                    row = []
-                    for j in range(5):
-                        row.append(collisions[j*3 + i].get_type())
-                    collisions_matrix.append(row)
+
+                
+                row1 = [collisions[2].get_type() , collisions[5].get_type() , collisions[8].get_type() , collisions[11].get_type() , collisions[14].get_type()]
+                row2 = [collisions[1].get_type() , collisions[4].get_type() , collisions[7].get_type() , collisions[10].get_type() , collisions[13].get_type()]
+                row3 = [collisions[0].get_type() , collisions[3].get_type() , collisions[6].get_type() , collisions[9].get_type() , collisions[12].get_type()]
+
+                collisions_matrix = [row1, row2, row3]
 
                 self.casino.setFruitsState(collisions_matrix)
                 self.casino.calculateWinnings()
@@ -675,7 +679,7 @@ class Payout(object):
         if self.active_special == False:
             money_invested = self.money_invested
             # provera reel-ova, obraditi self.fruits i self.array
-    
+
             # horizontalni #no 1, 2, 3
             columns, pyramide_counter = self.check_special_symbol('pyramid')
             if pyramide_counter >= 3:
@@ -689,6 +693,7 @@ class Payout(object):
                 win = self.calculate_best_from_begginging(row)
                 if win:
                     self.game.win_lines[i] = True
+                    print(f'linije sa brojem {i+1} je {row}')
                 winnings += win
     
             # no 4
@@ -696,6 +701,7 @@ class Payout(object):
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[3]=True
+                print(f'linije sa brojem 4 je {pom_list}')
             winnings += win
             
             # no 5
@@ -703,6 +709,7 @@ class Payout(object):
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[4]=True
+                print(f'linije sa brojem 5 je {pom_list}')
 
             winnings += win
 
@@ -711,6 +718,7 @@ class Payout(object):
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[5]=True
+                print(f'linije sa brojem 6 je {pom_list}')
             winnings += win
     
             # no 7
@@ -718,6 +726,7 @@ class Payout(object):
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[6]=True
+                print(f'linije sa brojem 7 je {pom_list}')
             winnings += win
     
             # no 8
@@ -725,6 +734,7 @@ class Payout(object):
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[7]=True
+                print(f'linije sa brojem 8 je {pom_list}')
             winnings += win
 
 
@@ -733,6 +743,7 @@ class Payout(object):
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[8]=True
+                print(f'linije sa brojem 9 je {pom_list}')
             winnings += win
 
 
@@ -741,6 +752,7 @@ class Payout(object):
             win = self.calculate_best_from_begginging(pom_list)
             if win:
                 self.game.win_lines[9]=True
+                print(f'linije sa brojem 10 je {pom_list}')
             winnings += win
     
             self.payToPlayer(winnings)
